@@ -63,10 +63,9 @@ try {
 						  `Expected application/json but received ${contentType}`);
 	  }	  
 	  if (error) {
-		  
 		try {
-		browsermessage =  browsermessage + error;
-		}catch(err){browsermessage =  browsermessage + "\ndoesn't work that way"+err;}
+		browsermessage = if(typof error != string){browsermessage + "it's not a string "+typof error}else{browsermessage + error};
+		}catch(err){browsermessage =  browsermessage + "\ndoesn't work that way";}
 				
 		// consume response data to free up memory
 		res.resume();
@@ -81,7 +80,7 @@ try {
 		  const parsedData = JSON.parse(rawData);
 		  browsermessage =  browsermessage +"\n\n"+parsedData;
 		} catch (e) {
-		  console.error(e.message);
+		  try {console.error(e.message)}catch(){};
 		}
 	  });
 	}).on('error', (e) => {
