@@ -2,6 +2,8 @@ var http = require('http');
 var browsermessage = " "
 const crypto = require('crypto');
 
+try {
+
 var urlUserTimeline = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
 var twitterurl = encodeURIComponent(this.urlUserTimeline);
 var method = "GET";
@@ -16,6 +18,10 @@ var oauthBaseString = method + "&" + twitterurl + "&" + oauthParams;
 var oauthSignatureKey = process.env.TWITTER_CONSUMER_SECRET + "&" + process.env.TWITTER__ACCESS_TOKEN_SECRET;
 
 var hmac = crypto.createHmac('sha1',oauthSignatureKey);
+
+}catch(err){
+	browsermessage = browsermessage +" wha? "+err ;
+}
 
 try {
 	hmac.update(oauthBaseString);
@@ -32,16 +38,18 @@ try {
 
 try {
 const httpOptions = {
-	path: 'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=shinygreyltd&count=2'
-	method: 'GET'
-	host: 'api.twitter.com'
+	path: 'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=shinygreyltd&count=2',
+	method: 'GET',
+	host: 'api.twitter.com',
 	headers: {
 		'Content-Type': 'application/x-www-form-urlencoded',
 		'Content-Length':'76',
 		'Authorization': 'OAuth oauth_consumer_key="'+process.env.TWITTER_CONSUMER_KEY+'", oauth_nonce="'+ Date.now() +'", oauth_signature="'+oauthSignature+'", oauth_signature_method="HMAC-SHA1", oauth_timestamp="'+Date.now()+'", oauth_token="'+process.env.TWITTER__ACCESS_TOKEN+'", oauth_version="1.0"'
 	}
 };
+
 browsermessage =  browsermessage +" it's fine ";
+
 } catch (err){
 	browsermessage =  browsermessage +" httpOptions problem "+err ;
 }
@@ -58,15 +66,12 @@ const request = http.request(httpOptions, (res) => {
     console.log('No more data in response.');
   });
 });
-
 request.on('error', (e) => {
   console.error(`problem with request: ${e.message}`);
 });
-
 // write data to request body
 request.write(postData);
 request.end();
-
 */
 
 
