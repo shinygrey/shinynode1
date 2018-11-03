@@ -66,9 +66,10 @@ try {
 		return;
 		}
 
-	  /*res.setEncoding('utf8');
+	  res.setEncoding('utf8');
 	  let rawData = '';
 	  res.on('data', (chunk) => { rawData += chunk; });
+	  /*
 	  res.on('end', () => {
 		try {
 		  const parsedData = JSON.parse(rawData);
@@ -79,7 +80,7 @@ try {
 	  });*/	  
 	  
 	})
-}catch(err){}
+}catch(err){browsermessage = browsermessage + "\n" + err+ "\n";}
 
 
 var server = http.createServer(function(request, response) {
