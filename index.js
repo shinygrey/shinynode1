@@ -48,15 +48,6 @@ const httpOptions = {
 	}
 };
 
-
-try {
-
-	}
-} catch (err){
-	browsermessage =  browsermessage +" request problem "+err ;
-}
-
-
 /*
 
   res.on('end', () => {
