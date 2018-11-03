@@ -15,11 +15,7 @@ oauthConsumerKey + "&oauth_nonce=" + Date.now() +
 var oauthBaseString = method + "&" + twitterurl + "&" + oauthParams;
 var oauthSignatureKey = process.env.TWITTER_CONSUMER_SECRET + "&" + process.env.TWITTER__ACCESS_TOKEN_SECRET;
 
-try {
-	var hmac = crypto.createHmac('sha1',oauthSignatureKey);
-} catch (err){
-	browsermessage =  browsermessage +" createHmac problem "+err ;
-}
+var hmac = crypto.createHmac('sha1',oauthSignatureKey);
 
 try {
 	hmac.update(oauthBaseString);
@@ -33,26 +29,8 @@ try {
 	browsermessage = browsermessage +" hmac.digest problem "+err ;
 }
 
-//browsermessage = browsermessage +" worked";
 
-var server = http.createServer(function(request, response) {
-var greg = process.env.GREG_VAR;
-response.writeHead(200, {"Content-Type": "text/plain"});
-response.end(
-"Hello Greg!  "+greg+" ... The type of the var is "+typeof greg+"\n"
-+ browsermessage +  "\n"
-+ oauthSignature
-);
-
-});
-	
-var port = process.env.PORT || 1337;
-server.listen(port);
-
-
-
-/*
-
+try {
 const httpOptions = {
 	path: 'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=shinygreyltd&count=2'
 	method: 'GET'
@@ -63,7 +41,12 @@ const httpOptions = {
 		'Authorization': 'OAuth oauth_consumer_key="'+process.env.TWITTER_CONSUMER_KEY+'", oauth_nonce="'+ Date.now() +'", oauth_signature="'+oauthSignature+'", oauth_signature_method="HMAC-SHA1", oauth_timestamp="'+Date.now()+'", oauth_token="'+process.env.TWITTER__ACCESS_TOKEN+'", oauth_version="1.0"'
 	}
 };
+browsermessage =  browsermessage +" it's fine ";
+} catch (err){
+	browsermessage =  browsermessage +" httpOptions problem "+err ;
+}
 
+/*
 const request = http.request(httpOptions, (res) => {
   console.log(`STATUS: ${res.statusCode}`);
   console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
@@ -82,4 +65,20 @@ request.on('error', (e) => {
 
 // write data to request body
 request.write(postData);
-request.end();*/
+request.end();
+
+*/
+
+
+
+var server = http.createServer(function(request, response) {
+var greg = process.env.GREG_VAR;
+response.writeHead(200, {"Content-Type": "text/plain"});
+response.end(
+"Hello Greg!  "+greg+" ... The type of the var is "+typeof greg+"\n"
++ browsermessage +  "\n"
+);
+});
+	
+var port = process.env.PORT || 1337;
+server.listen(port);
