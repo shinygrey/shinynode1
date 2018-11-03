@@ -3,26 +3,26 @@ var browsermessage
 let crypto;
 crypto = require('crypto');
 
-var Oauth = {
-	urlUserTimeline:'https://api.twitter.com/1.1/statuses/user_timeline.json',
-	url:encodeURIComponent(this.urlUserTimeline),
-	method:"GET",
-	oauthConsumerKey:process.env.TWITTER_CONSUMER_KEY,
-	oauthAccessToken:process.env.TWITTER__ACCESS_TOKEN,
-	oauthParams: function(){
+
+	var urlUserTimeline = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
+	var url = encodeURIComponent(this.urlUserTimeline);
+	var method = "GET";
+	var oauthConsumerKey = process.env.TWITTER_CONSUMER_KEY;
+	oauthAccessToken:process.env.TWITTER__ACCESS_TOKEN;
+	function oauthParams(){
 		return encodeURIComponent("oauth_consumer_key=" + this.oauthConsumerKey + "&oauth_nonce=" + Date.now() + "&oauth_signature_method=HMAC-SHA1&oauth_timestamp=" + Date.now() + "&oauth_token=" + this.oauthAccessToken);
-	},
-	oauthBaseString: function(){
+	}
+	function oauthBaseString(){
 		return this.method + "&" + this.url + "&" + this.oauthParams;
-	},
-	oauthSignatureKey : function(){return process.env.TWITTER_CONSUMER_SECRET + "&" + process.env.TWITTER__ACCESS_TOKEN_SECRET;}
-};
+	}
+	function oauthSignatureKey(){return process.env.TWITTER_CONSUMER_SECRET + "&" + process.env.TWITTER__ACCESS_TOKEN_SECRET;}
+
 
 
 try {
-	crypto.createHmac('sha1',Oauth.oauthSignatureKey);
+	crypto.createHmac('sha1',oauthSignatureKey);
 } catch (err) {
-	browsermessage = "problem";
+	browsermessage = "problem "+err ;
 }
 
 
