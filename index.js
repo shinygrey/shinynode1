@@ -3,6 +3,7 @@ var browsermessage
 let crypto;
 crypto = require('crypto');
 
+try {
 
 	var urlUserTimeline = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
 	var twitterurl = encodeURIComponent(this.urlUserTimeline);
@@ -10,40 +11,42 @@ crypto = require('crypto');
 	var oauthConsumerKey = process.env.TWITTER_CONSUMER_KEY;
 	var oauthAccessToken = process.env.TWITTER__ACCESS_TOKEN;
 	var oauthParam = encodeURIComponent(
-			"oauth_consumer_key=" + 
-			oauthConsumerKey + "&oauth_nonce=" + Date.now() + 
-			"&oauth_signature_method=HMAC-SHA1&oauth_timestamp=" + Date.now() + "&oauth_token=" + oauthAccessToken
+	"oauth_consumer_key=" + 
+	oauthConsumerKey + "&oauth_nonce=" + Date.now() + 
+	"&oauth_signature_method=HMAC-SHA1&oauth_timestamp=" + Date.now() + "&oauth_token=" + oauthAccessToken
 	);
-	
+
 	var oauthBaseString = method + "&" + twitterurl + "&" + oauthParams;
 
 	var oauthSignatureKey = process.env.TWITTER_CONSUMER_SECRET + "&" + process.env.TWITTER__ACCESS_TOKEN_SECRET;
 
 
 
-try {
+	try {
 	crypto.createHmac('sha1',oauthSignatureKey);
 	browsermessage = "worked";
-} catch (err) {
+	} catch (err) {
 	browsermessage = "problem "+err ;
+	}
+}catch(err){
+	browsermessage = "big problem "+err ;
 }
-
 
 /*
 hmac.update(Oauth.oauthBaseString);
 var oauthSignature = hmac.digest('base64');
 */
 var server = http.createServer(function(request, response) {
-	var greg = process.env.GREG_VAR;
-    response.writeHead(200, {"Content-Type": "text/plain"});
-    response.end(
-	"Hello Greg!  "+greg+" ... The type of the var is "+typeof greg+"\n"
-	+ process.env.TWITTER_CONSUMER_KEY + "\n"
-	    + browsermessage
-    );
+var greg = process.env.GREG_VAR;
+response.writeHead(200, {"Content-Type": "text/plain"});
+response.end(
+"Hello Greg!  "+greg+" ... The type of the var is "+typeof greg+"\n"
++ process.env.TWITTER_CONSUMER_KEY + "\n"
++ browsermessage
+);
 
 });
-
+	
 var port = process.env.PORT || 1337;
 server.listen(port);
 
