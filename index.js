@@ -1,7 +1,6 @@
 var http = require('http');
 var browsermessage
-let crypto;
-crypto = require('crypto');
+const crypto = require('crypto');
 
 try {
 
