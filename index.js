@@ -50,12 +50,9 @@ const httpOptions = {
 
 
 try {
-	const request = http.request(httpOptions, (res) => {browsermessage =  browsermessage +"\n"+res.statusCode}
-	//browsermessage =  browsermessage +"\n status bit - "+ `STATUS: ${res.statusCode}`;
-	//browsermessage =  browsermessage +"\n headers bit - "+ `HEADERS: ${JSON.stringify(res.headers)}`;
-	//browsermessage =  browsermessage +"\n body bit - " + `BODY: ${chunk}`;
-
-	
+	http.get('http://nodejs.org/dist/index.json', (res) => {
+		browsermessage =  browsermessage +"\n content - " + res.headers['content-type'];
+	}
 } catch (err){
 	browsermessage =  browsermessage +" request problem "+err ;
 }
@@ -76,7 +73,7 @@ request.end();
 */
 
 
-browsermessage =  browsermessage +" it's fine ";
+browsermessage =  browsermessage + " it's fine ";
 
 var server = http.createServer(function(request, response) {
 var greg = process.env.GREG_VAR;
