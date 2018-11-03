@@ -1,12 +1,7 @@
 var http = require('http');
 var browsermessage
 let crypto;
-try {
-	crypto = require('crypto');
-	browsermessage = typeof crypto
-} catch (err) {
-	browsermessage = 'crypto support is disabled!';
-}
+crypto = require('crypto');
 
 var Oauth = {
 	urlUserTimeline:'https://api.twitter.com/1.1/statuses/user_timeline.json',
@@ -22,8 +17,9 @@ var Oauth = {
 	},
 	oauthSignatureKey : function(){return process.env.TWITTER_CONSUMER_SECRET + "&" + process.env.TWITTER__ACCESS_TOKEN_SECRET;}
 };
-/*
+
 crypto.createHmac('sha1',Oauth.oauthSignatureKey);
+/*
 hmac.update(Oauth.oauthBaseString);
 var oauthSignature = hmac.digest('base64');
 */
