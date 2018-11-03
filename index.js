@@ -61,9 +61,13 @@ try {
 	  } else if (!/^application\/json/.test(contentType)) {
 		error = new Error('Invalid content-type.\n' +
 						  `Expected application/json but received ${contentType}`);
-	  }
+	  }	  
 	  if (error) {
-		console.error(error.message);
+		  
+		try {
+		browsermessage =  browsermessage + error;
+		}catch(err){browsermessage =  browsermessage + "\ndoesn't work that way"+err;}
+				
 		// consume response data to free up memory
 		res.resume();
 		return;
@@ -75,7 +79,7 @@ try {
 	  res.on('end', () => {
 		try {
 		  const parsedData = JSON.parse(rawData);
-		  browsermessage =  browsermessage +parsedData;
+		  browsermessage =  browsermessage +"\n\n"+parsedData;
 		} catch (e) {
 		  console.error(e.message);
 		}
@@ -84,7 +88,7 @@ try {
 	  console.error(`Got error: ${e.message}`);
 	});
 
-}catch{browsermessage =  browsermessage + " no good ";}
+}catch(err){{browsermessage =  browsermessage + "\n no good: "+err;}
 
 
 
