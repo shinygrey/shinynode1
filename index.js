@@ -3,6 +3,7 @@ var browsermessage
 let crypto;
 try {
 	crypto = require('crypto');
+	browsermessage = typeof crypto
 } catch (err) {
 	browsermessage = 'crypto support is disabled!';
 }
