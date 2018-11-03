@@ -48,22 +48,47 @@ const httpOptions = {
 	}
 };
 
-/*
+try {
 
-  res.on('end', () => {
-    console.log('No more data in response.');
-  });
-});
-request.on('error', (e) => {
-  console.error(`problem with request: ${e.message}`);
-});
-// write data to request body
-request.write(postData);
-request.end();
-*/
+	http.get('https://reqres.in/api/users/2', (res) => {
+	  const { statusCode } = res;
+	  const contentType = res.headers['content-type'];
+
+	  let error;
+	  if (statusCode !== 200) {
+		error = new Error('Request Failed.\n' +
+						  `Status Code: ${statusCode}`);
+	  } else if (!/^application\/json/.test(contentType)) {
+		error = new Error('Invalid content-type.\n' +
+						  `Expected application/json but received ${contentType}`);
+	  }
+	  if (error) {
+		console.error(error.message);
+		// consume response data to free up memory
+		res.resume();
+		return;
+	  }
+
+	  res.setEncoding('utf8');
+	  let rawData = '';
+	  res.on('data', (chunk) => { rawData += chunk; });
+	  res.on('end', () => {
+		try {
+		  const parsedData = JSON.parse(rawData);
+		  browsermessage =  browsermessage +parsedData;
+		} catch (e) {
+		  console.error(e.message);
+		}
+	  });
+	}).on('error', (e) => {
+	  console.error(`Got error: ${e.message}`);
+	});
+
+}catch{browsermessage =  browsermessage + " no good ";}
 
 
-browsermessage =  browsermessage + " it's fine ";
+
+
 
 var server = http.createServer(function(request, response) {
 var greg = process.env.GREG_VAR;
