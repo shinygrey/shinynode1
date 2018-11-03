@@ -1,4 +1,5 @@
 var http = require('http');
+var crypto = require('crypto');
 
 var Oauth = {
 	urlUserTimeline:'https://api.twitter.com/1.1/statuses/user_timeline.json',
