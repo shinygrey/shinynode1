@@ -14,10 +14,9 @@ crypto = require('crypto');
 			oauthConsumerKey + "&oauth_nonce=" + Date.now() + 
 			"&oauth_signature_method=HMAC-SHA1&oauth_timestamp=" + Date.now() + "&oauth_token=" + oauthAccessToken
 	);
-	})()
 	
 	var oauthBaseString = method + "&" + twitterurl + "&" + oauthParams;
-	})()
+
 	var oauthSignatureKey = process.env.TWITTER_CONSUMER_SECRET + "&" + process.env.TWITTER__ACCESS_TOKEN_SECRET;
 
 
