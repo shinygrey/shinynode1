@@ -47,7 +47,7 @@ const httpOptions = {
 		'Authorization': 'OAuth oauth_consumer_key="'+process.env.TWITTER_CONSUMER_KEY+'", oauth_nonce="'+ Date.now() +'", oauth_signature="'+oauthSignature+'", oauth_signature_method="HMAC-SHA1", oauth_timestamp="'+Date.now()+'", oauth_token="'+process.env.TWITTER__ACCESS_TOKEN+'", oauth_version="1.0"'
 	}
 };
-
+/*
 try {
 
 	http.get('https://reqres.in/api/users/2', (res) => {
@@ -89,7 +89,7 @@ try {
 
 }catch(err){{browsermessage =  browsermessage + "\n no good: "+err;}
 
-
+*/
 
 
 
