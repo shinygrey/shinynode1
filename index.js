@@ -8,7 +8,7 @@ crypto = require('crypto');
 	var twitterurl = encodeURIComponent(this.urlUserTimeline);
 	var method = "GET";
 	var oauthConsumerKey = process.env.TWITTER_CONSUMER_KEY;
-	oauthAccessToken:process.env.TWITTER__ACCESS_TOKEN;
+	var oauthAccessToken = process.env.TWITTER__ACCESS_TOKEN;
 	var oauthParam = encodeURIComponent(
 			"oauth_consumer_key=" + 
 			oauthConsumerKey + "&oauth_nonce=" + Date.now() + 
