@@ -6,7 +6,6 @@ var server = http.createServer(function(request, response) {
     response.writeHead(200, {"Content-Type": "text/plain"});
     response.end(
 	"Hello Greg!  "+greg+" ... The type of the var is "+typeof greg+"\n"
-	+ "Server running at http://localhost:%d", port + "\n"
 	+ twitterConsumerKey
     );
 
