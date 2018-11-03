@@ -61,7 +61,7 @@ try {
 			error = new Error('Invalid content-type.\n' + `Expected application/json but received ${contentType}`);
 		}
 		if (error) {
-		console.error(error.message);
+			browsermessage = browsermessage + "\n" +error.message+ "\n";
 		// consume response data to free up memory
 		res.resume();
 		return;
@@ -74,7 +74,7 @@ try {
 		res.on('end', () => {
 		try {
 			const parsedData = JSON.parse(rawData);
-			browsermessage = browsermessage + "\n" +parsedData+ "\n";
+			browsermessage = browsermessage + "\n" +rawData+ "\n";
 		} catch (e) {
 			browsermessage = browsermessage + "\n" +e.message+ "\n";
 		}
