@@ -2,11 +2,10 @@ var http = require('http');
 
 var server = http.createServer(function(request, response) {
 	var greg = process.env.GREG_VAR;
-	var twitterConsumerKey = process.env.TWITTER_CONSUMER_KEY;
     response.writeHead(200, {"Content-Type": "text/plain"});
     response.end(
 	"Hello Greg!  "+greg+" ... The type of the var is "+typeof greg+"\n"
-	+ twitterConsumerKey
+	+ process.env.TWITTER_CONSUMER_KEY
     );
 
 });
