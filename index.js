@@ -49,7 +49,7 @@ const httpOptions = {
 };
 
 try {
-	http.get('https://reqres.in/api/users/2', (res) => {
+	https.get('https://reqres.in/api/users/2', (res) => {
 		const { statusCode } = res;
 		const contentType = res.headers['content-type'];
 
