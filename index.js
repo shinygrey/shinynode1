@@ -50,13 +50,11 @@ const httpOptions = {
 
 
 try {
-	const request = http.request(httpOptions, (res) => {
-	browsermessage =  browsermessage +"\n status bit - "+ `STATUS: ${res.statusCode}`;
-	browsermessage =  browsermessage +"\n headers bit - "+ `HEADERS: ${JSON.stringify(res.headers)}`;
-	res.setEncoding('utf8');
-	res.on('data', (chunk) => {
-	browsermessage =  browsermessage +"\n body bit - " + `BODY: ${chunk}`;
-	});
+	const request = http.request(httpOptions, (res) => {browsermessage =  browsermessage +"\n"+res.statusCode}
+	//browsermessage =  browsermessage +"\n status bit - "+ `STATUS: ${res.statusCode}`;
+	//browsermessage =  browsermessage +"\n headers bit - "+ `HEADERS: ${JSON.stringify(res.headers)}`;
+	//browsermessage =  browsermessage +"\n body bit - " + `BODY: ${chunk}`;
+
 	
 } catch (err){
 	browsermessage =  browsermessage +" request problem "+err ;
