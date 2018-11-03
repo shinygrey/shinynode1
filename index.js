@@ -16,20 +16,6 @@ var oauthBaseString = method + "&" + twitterurl + "&" + oauthParams;
 var oauthSignatureKey = process.env.TWITTER_CONSUMER_SECRET + "&" + process.env.TWITTER__ACCESS_TOKEN_SECRET;
 
 try {
-	const crypto = require('crypto');
-	const secret = 'abcdefg';
-	const hash = crypto.createHmac('sha256', secret)
-			   .update('I love cupcakes')
-			   .digest('hex');
-	browsermessage =  browsermessage +" "+hash ;
-}catch (err){
-	browsermessage =  browsermessage +" crypto test problem "+err ;
-}
-
-
-
-
-try {
 	var hmac = crypto.createHmac('sha1',oauthSignatureKey);
 } catch (err){
 	browsermessage =  browsermessage +" createHmac problem "+err ;
@@ -54,8 +40,7 @@ var greg = process.env.GREG_VAR;
 response.writeHead(200, {"Content-Type": "text/plain"});
 response.end(
 "Hello Greg!  "+greg+" ... The type of the var is "+typeof greg+"\n"
-+ process.env.TWITTER_CONSUMER_KEY + "\n"
-+ browsermessage
++ browsermessage +  "\n"
 + oauthSignature
 );
 
