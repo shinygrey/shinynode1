@@ -16,7 +16,7 @@ server.listen(port);
 
 
 
-
+/*
 
 var Oauth = {
 	urlUserTimeline:'https://api.twitter.com/1.1/statuses/user_timeline.json',
@@ -36,6 +36,8 @@ var Oauth = {
 crypto.createHmac('sha1',Oauth.oauthSignatureKey);
 hmac.update(Oauth.oauthBaseString);
 var oauthSignature = hmac.digest('base64');
+*/
+
 /*
 
 const httpOptions = {
