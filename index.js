@@ -36,7 +36,7 @@ try {
 }
 
 
-try {
+
 const httpOptions = {
 	path: 'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=shinygreyltd&count=2',
 	method: 'GET',
@@ -48,20 +48,23 @@ const httpOptions = {
 	}
 };
 
-browsermessage =  browsermessage +" it's fine ";
 
+try {
+	const request = http.request(httpOptions, (res) => {
+	browsermessage =  browsermessage +"\n status bit - "+ `STATUS: ${res.statusCode}`;
+	browsermessage =  browsermessage +"\n headers bit - "+ `HEADERS: ${JSON.stringify(res.headers)}`;
+	res.setEncoding('utf8');
+	res.on('data', (chunk) => {
+	browsermessage =  browsermessage +"\n body bit - " + `BODY: ${chunk}`;
+	});
+	
 } catch (err){
-	browsermessage =  browsermessage +" httpOptions problem "+err ;
+	browsermessage =  browsermessage +" request problem "+err ;
 }
 
+
 /*
-const request = http.request(httpOptions, (res) => {
-  console.log(`STATUS: ${res.statusCode}`);
-  console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
-  res.setEncoding('utf8');
-  res.on('data', (chunk) => {
-    console.log(`BODY: ${chunk}`);
-  });
+
   res.on('end', () => {
     console.log('No more data in response.');
   });
@@ -75,6 +78,7 @@ request.end();
 */
 
 
+browsermessage =  browsermessage +" it's fine ";
 
 var server = http.createServer(function(request, response) {
 var greg = process.env.GREG_VAR;
