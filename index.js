@@ -24,7 +24,6 @@ try {
 
 	try {
 	crypto.createHmac('sha1',oauthSignatureKey);
-	browsermessage = "worked";
 	} catch (err) {
 	browsermessage = "problem "+err ;
 	}
@@ -32,10 +31,15 @@ try {
 	browsermessage = "big problem "+err ;
 }
 
-/*
-hmac.update(Oauth.oauthBaseString);
-var oauthSignature = hmac.digest('base64');
-*/
+try {
+	hmac.update(Oauth.oauthBaseString);
+	var oauthSignature = hmac.digest('base64');
+	browsermessage = "worked";
+}catch(err){
+browsermessage = "big problem "+err ;
+}
+
+
 var server = http.createServer(function(request, response) {
 var greg = process.env.GREG_VAR;
 response.writeHead(200, {"Content-Type": "text/plain"});
