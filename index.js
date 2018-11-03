@@ -10,7 +10,7 @@ try {
 	var method = "GET";
 	var oauthConsumerKey = process.env.TWITTER_CONSUMER_KEY;
 	var oauthAccessToken = process.env.TWITTER__ACCESS_TOKEN;
-	var oauthParam = encodeURIComponent(
+	var oauthParams = encodeURIComponent(
 	"oauth_consumer_key=" + 
 	oauthConsumerKey + "&oauth_nonce=" + Date.now() + 
 	"&oauth_signature_method=HMAC-SHA1&oauth_timestamp=" + Date.now() + "&oauth_token=" + oauthAccessToken
