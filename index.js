@@ -17,9 +17,9 @@ var Oauth = {
 	},
 	oauthSignatureKey : function(){return process.env.TWITTER_CONSUMER_SECRET + "&" + process.env.TWITTER__ACCESS_TOKEN_SECRET;}
 };
-
-crypto.createHmac('sha1',Oauth.oauthSignatureKey);
 /*
+crypto.createHmac('sha1',Oauth.oauthSignatureKey);
+
 hmac.update(Oauth.oauthBaseString);
 var oauthSignature = hmac.digest('base64');
 */
