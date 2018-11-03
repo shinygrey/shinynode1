@@ -50,8 +50,7 @@ const httpOptions = {
 
 
 try {
-	http.get('http://nodejs.org/dist/index.json', (res) => {
-		browsermessage =  browsermessage +"\n content - " + res.headers['content-type'];
+
 	}
 } catch (err){
 	browsermessage =  browsermessage +" request problem "+err ;
