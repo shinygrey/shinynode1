@@ -1,22 +1,5 @@
 var http = require('http');
 
-var server = http.createServer(function(request, response) {
-	var greg = process.env.GREG_VAR;
-    response.writeHead(200, {"Content-Type": "text/plain"});
-    response.end(
-	"Hello Greg!  "+greg+" ... The type of the var is "+typeof greg+"\n"
-	+ process.env.TWITTER_CONSUMER_KEY
-    );
-
-});
-
-var port = process.env.PORT || 1337;
-server.listen(port);
-
-
-
-/*
-
 var Oauth = {
 	urlUserTimeline:'https://api.twitter.com/1.1/statuses/user_timeline.json',
 	url:encodeURIComponent(this.urlUserTimeline),
@@ -35,7 +18,22 @@ var Oauth = {
 crypto.createHmac('sha1',Oauth.oauthSignatureKey);
 hmac.update(Oauth.oauthBaseString);
 var oauthSignature = hmac.digest('base64');
-*/
+
+var server = http.createServer(function(request, response) {
+	var greg = process.env.GREG_VAR;
+    response.writeHead(200, {"Content-Type": "text/plain"});
+    response.end(
+	"Hello Greg!  "+greg+" ... The type of the var is "+typeof greg+"\n"
+	+ process.env.TWITTER_CONSUMER_KEY + "\n"
+	+ oauthSignature
+    );
+
+});
+
+var port = process.env.PORT || 1337;
+server.listen(port);
+
+
 
 /*
 
