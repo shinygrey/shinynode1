@@ -1,5 +1,4 @@
 var http = require('http');
-var https = require('https');
 var browsermessage = " "
 const crypto = require('crypto');
 
@@ -67,19 +66,18 @@ try {
 		return;
 		}
 
-	  res.setEncoding('utf8');
-	  let rawData = '';
-	  res.on('data', (chunk) => { rawData += chunk; });
-	  /*
-	  res.on('end', () => {
+		res.setEncoding('utf8');
+		let rawData = '';
+		res.on('data', (chunk) => { rawData += chunk; });
+	
+		res.on('end', () => {
 		try {
-		  const parsedData = JSON.parse(rawData);
-		  console.log(parsedData);
+			const parsedData = JSON.parse(rawData);
+			browsermessage = browsermessage + "\n" +parsedData+ "\n";
 		} catch (e) {
-		  console.error(e.message);
+			browsermessage = browsermessage + "\n" +e.message+ "\n";
 		}
-	  });*/	  
-	  
+		});
 	})
 }catch(err){browsermessage = browsermessage + "\n" + err+ "\n";}
 
