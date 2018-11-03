@@ -47,7 +47,7 @@ try {
 	browsermessage = browsermessage +" hmac.digest problem "+err ;
 }
 
-browsermessage = browsermessage +" worked";
+//browsermessage = browsermessage +" worked";
 
 var server = http.createServer(function(request, response) {
 var greg = process.env.GREG_VAR;
@@ -56,6 +56,7 @@ response.end(
 "Hello Greg!  "+greg+" ... The type of the var is "+typeof greg+"\n"
 + process.env.TWITTER_CONSUMER_KEY + "\n"
 + browsermessage
++ oauthSignature
 );
 
 });
