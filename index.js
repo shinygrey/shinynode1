@@ -30,7 +30,7 @@ try {
 
 
 try {
-	crypto.createHmac('sha1',oauthSignatureKey);
+	var hmac = crypto.createHmac('sha1',oauthSignatureKey);
 } catch (err){
 	browsermessage =  browsermessage +" createHmac problem "+err ;
 }
