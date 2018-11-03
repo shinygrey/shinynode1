@@ -1,5 +1,5 @@
 var http = require('http');
-var browsermessage
+var browsermessage = " "
 const crypto = require('crypto');
 
 var urlUserTimeline = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
@@ -16,9 +16,23 @@ var oauthBaseString = method + "&" + twitterurl + "&" + oauthParams;
 var oauthSignatureKey = process.env.TWITTER_CONSUMER_SECRET + "&" + process.env.TWITTER__ACCESS_TOKEN_SECRET;
 
 try {
+	const crypto = require('crypto');
+	const secret = 'abcdefg';
+	const hash = crypto.createHmac('sha256', secret)
+			   .update('I love cupcakes')
+			   .digest('hex');
+	browsermessage =  browsermessage +" "+hash ;
+}catch (err){
+	browsermessage =  browsermessage +" crypto test problem "+err ;
+}
+
+
+
+
+try {
 	crypto.createHmac('sha1',oauthSignatureKey);
 } catch (err){
-	browsermessage = "createHmac problem "+err ;
+	browsermessage =  browsermessage +" createHmac problem "+err ;
 }
 
 try {
