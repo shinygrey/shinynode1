@@ -1,47 +1,14 @@
 var http = require('http');
 var https = require('https');
-var browsermessage = " "
 const crypto = require('crypto');
 
-const envGreg = process.env.GREG_VAR;
+const express= require('express'),
+path = require('path');
+const app =express();
+
 const envProtocol = process.env.REQUEST_PROTOCOL;
 const envRequestUrl = process.env.REQUEST_URL;
-const oauthConsumerKey = process.env.TWITTER_CONSUMER_KEY;
-const oauthAccessToken = process.env.TWITTER__ACCESS_TOKEN;
-const oauthConsumerSecret = process.env.TWITTER_CONSUMER_SECRET;
-const oauthAccessTokenSecret = process.env.TWITTER__ACCESS_TOKEN_SECRET;
-
-
-var urlUserTimeline = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
-var twitterurl = encodeURIComponent(urlUserTimeline);
-var method = "GET";
-var oauthParams = encodeURIComponent(
-"oauth_consumer_key=" + 
-oauthConsumerKey + "&oauth_nonce=" + Date.now() + 
-"&oauth_signature_method=HMAC-SHA1&oauth_timestamp=" + Date.now() + "&oauth_token=" + oauthAccessToken
-);
-var oauthBaseString = method + "&" + twitterurl + "&" + oauthParams;
-var oauthSignatureKey = oauthConsumerSecret + "&" + oauthAccessTokenSecret;
-
-var hmac = crypto.createHmac('sha1',oauthSignatureKey);
-
-try {
-	hmac.update(oauthBaseString);
-	var oauthSignature = hmac.digest('base64');
-}catch(err){
-	browsermessage = browsermessage +" hmac problem "+err ;
-}
-
-const httpOptions = {
-	path: 'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=shinygreyltd&count=2',
-	method: 'GET',
-	host: 'api.twitter.com',
-	headers: {
-		'Content-Type': 'application/x-www-form-urlencoded',
-		'Content-Length':'76',
-		'Authorization': 'OAuth oauth_consumer_key="'+oauthConsumerKey+'", oauth_nonce="'+ Date.now() +'", oauth_signature="'+oauthSignature+'", oauth_signature_method="HMAC-SHA1", oauth_timestamp="'+Date.now()+'", oauth_token="'+oauthAccessToken+'", oauth_version="1.0"'
-	}
-};
+var browsermessage = " "
 
 (function getRequest(){
 	if(envProtocol == "https"){var protocol = https;}else{var protocol = http;}
@@ -65,23 +32,48 @@ const httpOptions = {
 		let rawData = '';
 		res.on('data', (chunk) => { rawData += chunk; });
 		res.on('end', () => {
-		try {
-			const parsedData = JSON.parse(rawData);
-			browsermessage = browsermessage + "\n 2 \n" +rawData+ "\n";
-		} catch (e) {
-			browsermessage = browsermessage + "\n 3 \n" +e.message+ "\n";
-		}
+			try {
+				const parsedData = JSON.parse(rawData);
+				browsermessage = browsermessage + "\n 2 \n" +rawData+ "\n";
+			} catch (e) {
+				browsermessage = browsermessage + "\n 3 \n" +e.message+ "\n";
+			}
 		});
 	})
 })()
 
-var server = http.createServer(function(request, response) {
-	response.writeHead(200, {"Content-Type": "text/plain"});
-	response.end(
-		"Hello Greg!  "+envGreg+" ... \n"
-		+ browsermessage +  "\n"
-	);
-});
+/* RESTORE FOR SHINYANGLE
+app.use(express.static('./dist/shinyangle1'));*/
+
+app.use('/backend',function(req, res, next){
+	var theresponse = browsermessage;
+	var allowedFromConfig = process.env.ALLOWED_SITES;
+	var allowedOrigins = allowedFromConfig.split(",");
 	
-var port = process.env.PORT || 1337;
-server.listen(port);
+	if((req.get('Referer') == "https://shinyangle1.herokuapp.com/" && req.get('Origin') == undefined)){
+		res.send("\n"+theresponse+"\n");
+		next();
+	}else if(allowedOrigins.includes(req.get('Origin'))){
+		res.header("Access-Control-Allow-Origin", req.get('Origin'));
+		res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+		res.send("\n"+theresponse+"\n");
+		next();
+	}else{
+		res.send('not accessible');
+		res.status(403).end('forbidden');
+	}
+});
+
+/* RESTORE FOR SHINYANGLE
+app.get('/*', (req,res)=>{
+	res.sendFile(path.join(__dirname,'/dist/shinyangle1/index.html'));
+});
+*/
+
+app.get('/', function(req, res) {
+	res.send('Look ma, no HTML!');
+});
+
+app.listen(process.env.PORT || 8080, ()=>{
+	console.log('Server started');
+})
