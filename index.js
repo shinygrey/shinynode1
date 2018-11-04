@@ -44,7 +44,7 @@ function getJsonRequest(){
 			if (statusCode !== 200){
 				error = new Error('\nRequest Failed.\n' + statusCode);
 			}else if(!/^application\/json/.test(contentType)){
-				error = new Error('\nInvalid content-type.\n' + 'Expected application/json but received '+contentType;
+				error = new Error('\nInvalid content-type.\n' + 'Expected application/json but received '+contentType);
 			}
 			if (error) {
 				requestmessage = "\n1 " + requestmessage +error.message;
