@@ -75,14 +75,14 @@ const httpOptions = {
 	})
 })()
 
-
+var pathtoindex = path.join(__dirname,'/dist/shinyangle1/index.html');
 
 var server = http.createServer(function(request, response) {
 	response.writeHead(200, {"Content-Type": "text/plain"});
 	response.end(
 		"Hello Greg!  "+envGreg+" ... \n"
 		+ browsermessage +  "\n"
-		+ path.join(__dirname,'/dist/shinyangle1/index.html')) +  "\n"
+		+ pathtoindex +  "\n"
 	);
 });
 	
