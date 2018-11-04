@@ -85,7 +85,7 @@ try {
 
 
 (function getRequest(){
-	const protocol = if (process.env.PROTOCOL = "https"){https}else{http};	
+	if(process.env.PROTOCOL == "https"){var protocol = https}else{var protocol = http};	
 	protocol.get(process.env.REQUEST_URL, (res) => {
 		const { statusCode } = res;
 		const contentType = res.headers['content-type'];
