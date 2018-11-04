@@ -37,7 +37,6 @@ const httpOptions = {
 
 function getJsonRequest(){
 	var requestmessage = "\nstart ";
-	try {
 		https.get('https://reqres.in/api/users/2', (res) => {
 			const { statusCode } = res;
 			const contentType = res.headers['content-type'];
@@ -64,11 +63,12 @@ function getJsonRequest(){
 				}
 			});
 		})
-	}catch(err){requestmessage = "\n4 " + requestmessage + err;}
 	return requestmessage;
 }
 
-browsermessage = browsermessage + getJsonRequest();
+try{
+	browsermessage = browsermessage + getJsonRequest();
+}catch(err){browsermessage = "\n " + browsermessage + err;}
 
 var server = http.createServer(function(request, response) {
 	var greg = process.env.GREG_VAR;
