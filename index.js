@@ -43,54 +43,43 @@ const httpOptions = {
 	}
 };
 
-var restGetRequest = (function () {
-    function restGetRequest() {
-        var _this = this;
-        var statusCode = res.statusCode;
-        var contentType = res.headers['content-type'];
-        var error;
-        if (envProtocol == "https") {
-            var protocol = https;
-        }
-        else {
-            var protocol = http;
-        }
-        protocol.get(envRequestUrl, function (res) {
-            if (statusCode !== 200) {
-                error = new Error('Request Failed.\n' + ("Status Code: " + statusCode));
-            }
-            else if (!/^application\/json/.test(contentType)) {
-                error = new Error('Invalid content-type.\n' + ("Expected application/json but received " + contentType));
-            }
-            if (error) {
-                _this.responseString += "\n 1 \n" + error.message + "\n";
-                res.resume();
-                return;
-            }
-            res.setEncoding('utf8');
-            res.on('data', function (chunk) { _this.rawData += chunk; });
-            res.on('end', function () {
-                try {
-                    _this.parsedData = JSON.parse(_this.rawData);
-                    _this.responseString += "\n 2 \n" + _this.rawData + "\n";
-                }
-                catch (e) {
-                    _this.responseString += "\n 3 \n" + e.message + "\n";
-                }
-            });
-        });
-    }
-    return restGetRequest;
-}());
+(function getRequest(){
+	if(envProtocol == "https"){var protocol = https;}else{var protocol = http;}
+	protocol.get(envRequestUrl, (res) => {
+		const { statusCode } = res;
+		const contentType = res.headers['content-type'];
+
+		let error;
+		if (statusCode !== 200){
+			error = new Error('Request Failed.\n' + `Status Code: ${statusCode}`);
+		}else if(!/^application\/json/.test(contentType)){
+			error = new Error('Invalid content-type.\n' + `Expected application/json but received ${contentType}`);
+		}
+		if (error) {
+			browsermessage = browsermessage + "\n 1 \n" +error.message+ "\n";
+		// consume response data to free up memory
+		res.resume();
+		return;
+		}
+		res.setEncoding('utf8');
+		let rawData = '';
+		res.on('data', (chunk) => { rawData += chunk; });
+		res.on('end', () => {
+		try {
+			const parsedData = JSON.parse(rawData);
+			browsermessage = browsermessage + "\n 2 \n" +rawData+ "\n";
+		} catch (e) {
+			browsermessage = browsermessage + "\n 3 \n" +e.message+ "\n";
+		}
+		});
+	})
+})()
 
 var server = http.createServer(function(request, response) {
 	response.writeHead(200, {"Content-Type": "text/plain"});
-	
-	var request = new restGetRequest;
-	
 	response.end(
 		"Hello Greg!  "+envGreg+" ... \n"
-		+ request.rawData +  "\n"
+		+ browsermessage +  "\n"
 	);
 });
 	
