@@ -70,9 +70,10 @@ app.get('/*', (req,res)=>{
 });
 */
 
-app.get('/', function(req, res) {
+app.get('/*', (req,res)=>{
 	res.send('Look ma, no HTML!');
 });
+*/
 
 app.listen(process.env.PORT || 8080, ()=>{
 	console.log('Server started');
