@@ -43,7 +43,8 @@ const httpOptions = {
 	}
 };
 
-(function getRequest(){
+function getRequest(){
+	var requestmessage = "\nstart"
 	if(envProtocol == "https"){var protocol = https}else{var protocol = http};
 	protocol.get(envRequestUrl, (res) => {
 		const { statusCode } = res;
@@ -56,7 +57,7 @@ const httpOptions = {
 			error = new Error('Invalid content-type.\n' + `Expected application/json but received ${contentType}`);
 		}
 		if (error) {
-			browsermessage = browsermessage + "\n" +error.message+ "\n";
+			requestmessage = requestmessage + "\n 1 \n" +error.message+ "\n";
 		// consume response data to free up memory
 		res.resume();
 		return;
@@ -67,13 +68,16 @@ const httpOptions = {
 		res.on('end', () => {
 		try {
 			const parsedData = JSON.parse(rawData);
-			browsermessage = browsermessage + "\n" +rawData+ "\n";
+			requestmessage = requestmessage + "\n 2 \n" +rawData+ "\n";
 		} catch (e) {
-			browsermessage = browsermessage + "\n" +e.message+ "\n";
+			requestmessage = requestmessage + "\n 3 \n" +e.message+ "\n";
 		}
 		});
 	})
-})
+	return requestmessage;
+}
+
+browsermessage = browsermessage + getRequest();
 
 var server = http.createServer(function(request, response) {
 	response.writeHead(200, {"Content-Type": "text/plain"});
