@@ -1,27 +1,25 @@
-var http = require('http');
-var https = require('https');
+const http = require('http');
+const https = require('https');
 var browsermessage = " "
 const crypto = require('crypto');
 
 try {
+	var urlUserTimeline = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
+	var twitterurl = encodeURIComponent(this.urlUserTimeline);
+	var method = "GET";
+	var oauthConsumerKey = process.env.TWITTER_CONSUMER_KEY;
+	var oauthAccessToken = process.env.TWITTER__ACCESS_TOKEN;
+	var oauthParams = encodeURIComponent(
+		"oauth_consumer_key=" + 
+		oauthConsumerKey + "&oauth_nonce=" + Date.now() + 
+		"&oauth_signature_method=HMAC-SHA1&oauth_timestamp=" + Date.now() + "&oauth_token=" + oauthAccessToken
+	);
+	var oauthBaseString = method + "&" + twitterurl + "&" + oauthParams;
+	var oauthSignatureKey = process.env.TWITTER_CONSUMER_SECRET + "&" + process.env.TWITTER__ACCESS_TOKEN_SECRET;
 
-var urlUserTimeline = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
-var twitterurl = encodeURIComponent(this.urlUserTimeline);
-var method = "GET";
-var oauthConsumerKey = process.env.TWITTER_CONSUMER_KEY;
-var oauthAccessToken = process.env.TWITTER__ACCESS_TOKEN;
-var oauthParams = encodeURIComponent(
-"oauth_consumer_key=" + 
-oauthConsumerKey + "&oauth_nonce=" + Date.now() + 
-"&oauth_signature_method=HMAC-SHA1&oauth_timestamp=" + Date.now() + "&oauth_token=" + oauthAccessToken
-);
-var oauthBaseString = method + "&" + twitterurl + "&" + oauthParams;
-var oauthSignatureKey = process.env.TWITTER_CONSUMER_SECRET + "&" + process.env.TWITTER__ACCESS_TOKEN_SECRET;
-
-var hmac = crypto.createHmac('sha1',oauthSignatureKey);
-hmac.update(oauthBaseString);
-var oauthSignature = hmac.digest('base64');
-	
+	var hmac = crypto.createHmac('sha1',oauthSignatureKey);
+	hmac.update(oauthBaseString);
+	var oauthSignature = hmac.digest('base64');
 }catch(err){
 	browsermessage = browsermessage +"\nproblem "+err ;
 }
@@ -38,7 +36,7 @@ const httpOptions = {
 };
 
 function getJsonRequest(){
-	var browsermessage = "\nstart ";
+	var requestmessage = "\nstart ";
 	try {
 		https.get('https://reqres.in/api/users/2', (res) => {
 			const { statusCode } = res;
@@ -50,7 +48,7 @@ function getJsonRequest(){
 				error = new Error('\nInvalid content-type.\n' + 'Expected application/json but received '+contentType;
 			}
 			if (error) {
-				browsermessage = "\n1 " + browsermessage +error.message;
+				requestmessage = "\n1 " + requestmessage +error.message;
 			res.resume();
 			return;
 			}
@@ -60,25 +58,25 @@ function getJsonRequest(){
 			res.on('end', () => {
 				try {
 					const parsedData = JSON.parse(rawData);
-					browsermessage = "\n2 " + browsermessage +rawData;
+					requestmessage = "\n2 " + requestmessage +rawData;
 				} catch (e) {
-					browsermessage = "\n3 " + browsermessage +e.message;
+					requestmessage = "\n3 " + requestmessage +e.message;
 				}
 			});
 		})
-	}catch(err){browsermessage = "\n4 " + browsermessage + err;}
-	return browsermessage;
+	}catch(err){requestmessage = "\n4 " + requestmessage + err;}
+	return requestmessage;
 }
 
 browsermessage = browsermessage + getJsonRequest();
 
 var server = http.createServer(function(request, response) {
-var greg = process.env.GREG_VAR;
-response.writeHead(200, {"Content-Type": "text/plain"});
-response.end(
-"Hello Greg!  "+greg+" ... \n"
-+ browsermessage +  "\n"
-);
+	var greg = process.env.GREG_VAR;
+	response.writeHead(200, {"Content-Type": "text/plain"});
+	response.end(
+		"Hello Greg!  "+greg+" ... \n"
+		+ browsermessage +  "\n"
+	);
 });
 	
 var port = process.env.PORT || 1337;
