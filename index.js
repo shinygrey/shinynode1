@@ -44,8 +44,8 @@ const httpOptions = {
 };
 
 (function getRequest(){
-	var requestmessage = "\nstart"
-	if(envProtocol == "https"){var protocol = https}else{var protocol = http};
+	var requestmessage = "\nstart";
+	if(envProtocol == "https"){var protocol = https;}else{var protocol = http;}
 	protocol.get(envRequestUrl, (res) => {
 		const { statusCode } = res;
 		const contentType = res.headers['content-type'];
