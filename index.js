@@ -74,7 +74,7 @@ function getRequest(){
 		}
 		});
 	})
-	browsermessage = browsermessage + requestmessage;;
+	browsermessage = browsermessage + requestmessage;
 }
 
 var server = http.createServer(function(request, response) {
