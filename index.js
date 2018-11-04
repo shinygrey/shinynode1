@@ -19,24 +19,12 @@ var oauthBaseString = method + "&" + twitterurl + "&" + oauthParams;
 var oauthSignatureKey = process.env.TWITTER_CONSUMER_SECRET + "&" + process.env.TWITTER__ACCESS_TOKEN_SECRET;
 
 var hmac = crypto.createHmac('sha1',oauthSignatureKey);
-
+hmac.update(oauthBaseString);
+var oauthSignature = hmac.digest('base64');
+	
 }catch(err){
-	browsermessage = browsermessage +" wha? "+err ;
+	browsermessage = browsermessage +"\nproblem "+err ;
 }
-
-try {
-	hmac.update(oauthBaseString);
-}catch(err){
-	browsermessage = browsermessage +" hmac.update problem "+err ;
-}
-
-try {
-	var oauthSignature = hmac.digest('base64');
-}catch(err){
-	browsermessage = browsermessage +" hmac.digest problem "+err ;
-}
-
-
 
 const httpOptions = {
 	path: 'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=shinygreyltd&count=2',
@@ -49,39 +37,40 @@ const httpOptions = {
 	}
 };
 
-try {
-	https.get('https://reqres.in/api/users/2', (res) => {
-		const { statusCode } = res;
-		const contentType = res.headers['content-type'];
+function getJsonRequest(){
+	var browsermessage = "\nstart "
+	try {
+		https.get('https://reqres.in/api/users/2', (res) => {
+			const { statusCode } = res;
+			const contentType = res.headers['content-type'];
+			let error;
+			if (statusCode !== 200){
+				error = new Error('\nRequest Failed.\n' + statusCode);
+			}else if(!/^application\/json/.test(contentType)){
+				error = new Error('\nInvalid content-type.\n' + 'Expected application/json but received '+contentType;
+			}
+			if (error) {
+				browsermessage = "\n1 " + browsermessage +error.message;
+			res.resume();
+			return;
+			}
+			res.setEncoding('utf8');
+			let rawData = '';
+			res.on('data', (chunk) => { rawData += chunk; });
+			res.on('end', () => {
+				try {
+					const parsedData = JSON.parse(rawData);
+					browsermessage = "\n2 " + browsermessage +rawData;
+				} catch (e) {
+					browsermessage = "\n3 " + browsermessage +e.message;
+				}
+			});
+		})
+	}catch(err){browsermessage = "\n4 " + browsermessage + err;}
+	return browsermessage;
+}
 
-		let error;
-		if (statusCode !== 200){
-			error = new Error('Request Failed.\n' + `Status Code: ${statusCode}`);
-		}else if(!/^application\/json/.test(contentType)){
-			error = new Error('Invalid content-type.\n' + `Expected application/json but received ${contentType}`);
-		}
-		if (error) {
-			browsermessage = browsermessage + "\n" +error.message+ "\n";
-		// consume response data to free up memory
-		res.resume();
-		return;
-		}
-
-		res.setEncoding('utf8');
-		let rawData = '';
-		res.on('data', (chunk) => { rawData += chunk; });
-	
-		res.on('end', () => {
-		try {
-			const parsedData = JSON.parse(rawData);
-			browsermessage = browsermessage + "\n" +rawData+ "\n";
-		} catch (e) {
-			browsermessage = browsermessage + "\n" +e.message+ "\n";
-		}
-		});
-	})
-}catch(err){browsermessage = browsermessage + "\n" + err+ "\n";}
-
+browsermessage = browsermessage + getJsonRequest();
 
 var server = http.createServer(function(request, response) {
 var greg = process.env.GREG_VAR;
