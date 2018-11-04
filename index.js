@@ -65,11 +65,11 @@ function getJsonRequest(){
 		})
 	return requestmessage;
 }
-/*
+
 try{
 	browsermessage = browsermessage + getJsonRequest();
 }catch(err){browsermessage = "\n " + browsermessage + err;}
-*/
+
 
 var server = http.createServer(function(request, response) {
 	var greg = process.env.GREG_VAR;
