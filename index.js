@@ -34,7 +34,7 @@ const httpOptions = {
 		'Authorization': 'OAuth oauth_consumer_key="'+process.env.TWITTER_CONSUMER_KEY+'", oauth_nonce="'+ Date.now() +'", oauth_signature="'+oauthSignature+'", oauth_signature_method="HMAC-SHA1", oauth_timestamp="'+Date.now()+'", oauth_token="'+process.env.TWITTER__ACCESS_TOKEN+'", oauth_version="1.0"'
 	}
 };
-
+/*
 function getJsonRequest(){
 	var requestmessage = "\nstart ";
 		https.get('https://reqres.in/api/users/2', (res) => {
@@ -69,6 +69,7 @@ function getJsonRequest(){
 try{
 	browsermessage = browsermessage + getJsonRequest();
 }catch(err){browsermessage = "\n " + browsermessage + err;}
+*/
 
 var server = http.createServer(function(request, response) {
 	var greg = process.env.GREG_VAR;
