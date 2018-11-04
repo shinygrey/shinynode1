@@ -48,7 +48,7 @@ const httpOptions = {
 		'Authorization': 'OAuth oauth_consumer_key="'+process.env.TWITTER_CONSUMER_KEY+'", oauth_nonce="'+ Date.now() +'", oauth_signature="'+oauthSignature+'", oauth_signature_method="HMAC-SHA1", oauth_timestamp="'+Date.now()+'", oauth_token="'+process.env.TWITTER__ACCESS_TOKEN+'", oauth_version="1.0"'
 	}
 };
-
+/*
 try {
 	http.get('http://northwind.servicestack.net/cusers.xml', (res) => {
 		const { statusCode } = res;
@@ -81,7 +81,42 @@ try {
 		});
 	})
 }catch(err){browsermessage = browsermessage + "\n" + err+ "\n";}
+*/
 
+
+(function getRequest(){
+	const protocol = if (process.env.PROTOCOL = "https"){https}else{http};	
+	protocol.get(process.env.REQUEST_URL, (res) => {
+		const { statusCode } = res;
+		const contentType = res.headers['content-type'];
+
+		let error;
+		if (statusCode !== 200){
+			error = new Error('Request Failed.\n' + `Status Code: ${statusCode}`);
+		}else if(!/^application\/json/.test(contentType)){
+			error = new Error('Invalid content-type.\n' + `Expected application/json but received ${contentType}`);
+		}
+		if (error) {
+			browsermessage = browsermessage + "\n" +error.message+ "\n";
+		// consume response data to free up memory
+		res.resume();
+		return;
+		}
+
+		res.setEncoding('utf8');
+		let rawData = '';
+		res.on('data', (chunk) => { rawData += chunk; });
+	
+		res.on('end', () => {
+		try {
+			const parsedData = JSON.parse(rawData);
+			browsermessage = browsermessage + "\n" +rawData+ "\n";
+		} catch (e) {
+			browsermessage = browsermessage + "\n" +e.message+ "\n";
+		}
+		});
+	})
+})()
 
 var server = http.createServer(function(request, response) {
 var greg = process.env.GREG_VAR;
