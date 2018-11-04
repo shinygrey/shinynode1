@@ -1,7 +1,7 @@
-const http = require('http');
-const https = require('https');
+var http = require('http');
+var https = require('https');
 var browsermessage = " "
-const crypto = require('crypto');
+var crypto = require('crypto');
 
 try {
 	var urlUserTimeline = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
@@ -24,7 +24,7 @@ try {
 	browsermessage = browsermessage +"\nproblem "+err ;
 }
 
-const httpOptions = {
+var httpOptions = {
 	path: 'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=shinygreyltd&count=2',
 	method: 'GET',
 	host: 'api.twitter.com',
@@ -37,32 +37,32 @@ const httpOptions = {
 
 function getJsonRequest(){
 	var requestmessage = "\nstart ";
-		https.get('https://reqres.in/api/users/2', (res) => {
-			const { statusCode } = res;
-			const contentType = res.headers['content-type'];
-			let error;
-			if (statusCode !== 200){
-				error = new Error('\nRequest Failed.\n' + statusCode);
-			}else if(!/^application\/json/.test(contentType)){
-				error = new Error('\nInvalid content-type.\n' + 'Expected application/json but received '+contentType);
-			}
-			if (error) {
-				requestmessage = "\n1 " + requestmessage +error.message;
+	https.get('https://reqres.in/api/users/2', (res) => {
+		var statusCode = res.statusCode;
+		var contentType = res.headers['content-type'];
+		var error;
+		if (statusCode !== 200){
+			error = new Error('\nRequest Failed.\n' + statusCode);
+		}else if(!/^application\/json/.test(contentType)){
+			error = new Error('\nInvalid content-type.\n' + 'Expected application/json but received '+contentType);
+		}
+		if (error) {
+			requestmessage = requestmessage + "\n1 " + error.message;
 			res.resume();
 			return;
+		}
+		res.setEncoding('utf8');
+		var rawData = '';
+		res.on('data', (chunk) => { rawData += chunk; });
+		res.on('end', () => {
+			try {
+				var parsedData = JSON.parse(rawData);
+				requestmessage = requestmessage + "\n2 " + rawData;
+			} catch (e) {
+				requestmessage = requestmessage + "\n3 " + e.message;
 			}
-			res.setEncoding('utf8');
-			let rawData = '';
-			res.on('data', (chunk) => { rawData += chunk; });
-			res.on('end', () => {
-				try {
-					const parsedData = JSON.parse(rawData);
-					requestmessage = "\n2 " + requestmessage +rawData;
-				} catch (e) {
-					requestmessage = "\n3 " + requestmessage +e.message;
-				}
-			});
-		})
+		});
+	})
 	return requestmessage;
 }
 
