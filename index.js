@@ -50,7 +50,7 @@ const httpOptions = {
 };
 
 try {
-	https.get('https://reqres.in/api/users/2', (res) => {
+	http.get('http://northwind.servicestack.net/customers.xml', (res) => {
 		const { statusCode } = res;
 		const contentType = res.headers['content-type'];
 
