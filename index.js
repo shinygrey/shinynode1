@@ -1,30 +1,44 @@
 var http = require('http');
 var https = require('https');
 var browsermessage = " "
-var crypto = require('crypto');
+const crypto = require('crypto');
 
 try {
-	var urlUserTimeline = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
-	var twitterurl = encodeURIComponent(this.urlUserTimeline);
-	var method = "GET";
-	var oauthConsumerKey = process.env.TWITTER_CONSUMER_KEY;
-	var oauthAccessToken = process.env.TWITTER__ACCESS_TOKEN;
-	var oauthParams = encodeURIComponent(
-		"oauth_consumer_key=" + 
-		oauthConsumerKey + "&oauth_nonce=" + Date.now() + 
-		"&oauth_signature_method=HMAC-SHA1&oauth_timestamp=" + Date.now() + "&oauth_token=" + oauthAccessToken
-	);
-	var oauthBaseString = method + "&" + twitterurl + "&" + oauthParams;
-	var oauthSignatureKey = process.env.TWITTER_CONSUMER_SECRET + "&" + process.env.TWITTER__ACCESS_TOKEN_SECRET;
 
-	var hmac = crypto.createHmac('sha1',oauthSignatureKey);
-	hmac.update(oauthBaseString);
-	var oauthSignature = hmac.digest('base64');
+var urlUserTimeline = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
+var twitterurl = encodeURIComponent(this.urlUserTimeline);
+var method = "GET";
+var oauthConsumerKey = process.env.TWITTER_CONSUMER_KEY;
+var oauthAccessToken = process.env.TWITTER__ACCESS_TOKEN;
+var oauthParams = encodeURIComponent(
+"oauth_consumer_key=" + 
+oauthConsumerKey + "&oauth_nonce=" + Date.now() + 
+"&oauth_signature_method=HMAC-SHA1&oauth_timestamp=" + Date.now() + "&oauth_token=" + oauthAccessToken
+);
+var oauthBaseString = method + "&" + twitterurl + "&" + oauthParams;
+var oauthSignatureKey = process.env.TWITTER_CONSUMER_SECRET + "&" + process.env.TWITTER__ACCESS_TOKEN_SECRET;
+
+var hmac = crypto.createHmac('sha1',oauthSignatureKey);
+
 }catch(err){
-	browsermessage = browsermessage +"\nproblem "+err ;
+	browsermessage = browsermessage +" wha? "+err ;
 }
 
-var httpOptions = {
+try {
+	hmac.update(oauthBaseString);
+}catch(err){
+	browsermessage = browsermessage +" hmac.update problem "+err ;
+}
+
+try {
+	var oauthSignature = hmac.digest('base64');
+}catch(err){
+	browsermessage = browsermessage +" hmac.digest problem "+err ;
+}
+
+
+
+const httpOptions = {
 	path: 'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=shinygreyltd&count=2',
 	method: 'GET',
 	host: 'api.twitter.com',
@@ -35,58 +49,47 @@ var httpOptions = {
 	}
 };
 
-function getJsonRequest(){
-	var requestmessage = "\nstart ";
-	
-	try {
-	
+try {
 	https.get('https://reqres.in/api/users/2', (res) => {
-		var statusCode = res.statusCode;
-		var contentType = res.headers['content-type'];
-		var error;
+		const { statusCode } = res;
+		const contentType = res.headers['content-type'];
+
+		let error;
 		if (statusCode !== 200){
-			error = new Error('\nRequest Failed.\n' + statusCode);
+			error = new Error('Request Failed.\n' + `Status Code: ${statusCode}`);
 		}else if(!/^application\/json/.test(contentType)){
-			error = new Error('\nInvalid content-type.\n' + 'Expected application/json but received '+contentType);
+			error = new Error('Invalid content-type.\n' + `Expected application/json but received ${contentType}`);
 		}
 		if (error) {
-			requestmessage = requestmessage + "\n1 " + error.message;
-			res.resume();
-			return;
+			browsermessage = browsermessage + "\n" +error.message+ "\n";
+		// consume response data to free up memory
+		res.resume();
+		return;
 		}
+
 		res.setEncoding('utf8');
-		var rawData = '';
+		let rawData = '';
 		res.on('data', (chunk) => { rawData += chunk; });
-		
 	
-		
 		res.on('end', () => {
-			try {
-				var parsedData = JSON.parse(rawData);
-				requestmessage = requestmessage + "\n2 " + rawData;
-			} catch (e) {
-				requestmessage = requestmessage + "\n3 " + e.message;
-			}
+		try {
+			const parsedData = JSON.parse(rawData);
+			browsermessage = browsermessage + "\n" +rawData+ "\n";
+		} catch (e) {
+			browsermessage = browsermessage + "\n" +e.message+ "\n";
+		}
 		});
 	})
-	
-	}catch (e) {requestmessage = requestmessage + "\n4 " + e.message}
-	
-	return requestmessage;
-}
-
-try{
-	browsermessage = browsermessage + getJsonRequest();
-}catch(err){browsermessage = "\n " + browsermessage + err;}
+}catch(err){browsermessage = browsermessage + "\n" + err+ "\n";}
 
 
 var server = http.createServer(function(request, response) {
-	var greg = process.env.GREG_VAR;
-	response.writeHead(200, {"Content-Type": "text/plain"});
-	response.end(
-		"Hello Greg!  "+greg+" ... \n"
-		+ browsermessage +  "\n"
-	);
+var greg = process.env.GREG_VAR;
+response.writeHead(200, {"Content-Type": "text/plain"});
+response.end(
+"Hello Greg!  "+greg+" ... \n"
++ browsermessage +  "\n"
+);
 });
 	
 var port = process.env.PORT || 1337;
