@@ -37,6 +37,9 @@ var httpOptions = {
 
 function getJsonRequest(){
 	var requestmessage = "\nstart ";
+	
+	try {
+	
 	https.get('https://reqres.in/api/users/2', (res) => {
 		var statusCode = res.statusCode;
 		var contentType = res.headers['content-type'];
@@ -54,6 +57,9 @@ function getJsonRequest(){
 		res.setEncoding('utf8');
 		var rawData = '';
 		res.on('data', (chunk) => { rawData += chunk; });
+		
+	
+		
 		res.on('end', () => {
 			try {
 				var parsedData = JSON.parse(rawData);
@@ -63,6 +69,9 @@ function getJsonRequest(){
 			}
 		});
 	})
+	
+	}catch (e) {requestmessage = requestmessage + "\n4 " + e.message}
+	
 	return requestmessage;
 }
 
