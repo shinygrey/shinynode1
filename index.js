@@ -38,7 +38,7 @@ const httpOptions = {
 };
 
 function getJsonRequest(){
-	var browsermessage = "\nstart "
+	var browsermessage = "\nstart ";
 	try {
 		https.get('https://reqres.in/api/users/2', (res) => {
 			const { statusCode } = res;
