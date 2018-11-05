@@ -3,6 +3,8 @@ var https = require('https');
 var browsermessage = " "
 const crypto = require('crypto');
 
+const {Twitter} = require("../app/twitter.js");
+
 const envGreg = process.env.GREG_VAR;
 const envProtocol = process.env.REQUEST_PROTOCOL;
 const envRequestUrl = process.env.REQUEST_URL;
@@ -74,6 +76,8 @@ const httpOptions = {
 		});
 	})
 })()
+
+var atweet = new Twitter();
 
 var server = http.createServer(function(request, response) {
 	response.writeHead(200, {"Content-Type": "text/plain"});
