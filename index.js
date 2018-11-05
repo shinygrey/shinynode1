@@ -3,7 +3,7 @@ var https = require('https');
 var browsermessage = " "
 const crypto = require('crypto');
 
-const twitter = require('../app/twitter.js'); /*require(__dirname+'/twitter.js');*/
+//const twitter = require('../app/twitter.js'); /*require(__dirname+'/twitter.js');*/
 
 const envGreg = process.env.GREG_VAR;
 const envProtocol = process.env.REQUEST_PROTOCOL;
@@ -78,7 +78,7 @@ const httpOptions = {
 })()
 
 var filepath = __filename + "\n" + __dirname;
-var twittertest = new twitter();
+
 
 var server = http.createServer(function(request, response) {
 	response.writeHead(200, {"Content-Type": "text/plain"});
@@ -86,8 +86,6 @@ var server = http.createServer(function(request, response) {
 		"Hello Greg!  "+envGreg+" ... \n"
 		+ twitter+" " + filepath + "\n"
 		+ browsermessage +  "\n"
-		+ twittertest.test +  "\n"
-		
 	);
 });
 	
