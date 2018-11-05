@@ -3,7 +3,7 @@ var https = require('https');
 var browsermessage = " "
 const crypto = require('crypto');
 
-const twitter = require('/app/twitter.js');
+const twitter = require(__dirname+'/twitter.js');
 
 const envGreg = process.env.GREG_VAR;
 const envProtocol = process.env.REQUEST_PROTOCOL;
