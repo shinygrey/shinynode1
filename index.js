@@ -3,7 +3,7 @@ var https = require('https');
 var browsermessage = " "
 const crypto = require('crypto');
 
-/*const twitter = require(path.join(__dirname,'/twitter.js'));*/
+const twitter = require('/app/twitter.js');
 
 const envGreg = process.env.GREG_VAR;
 const envProtocol = process.env.REQUEST_PROTOCOL;
@@ -83,7 +83,7 @@ var server = http.createServer(function(request, response) {
 	response.writeHead(200, {"Content-Type": "text/plain"});
 	response.end(
 		"Hello Greg!  "+envGreg+" ... \n"
-		+ filepath + "\n"
+		+ twitter+" " + filepath + "\n"
 		+ browsermessage +  "\n"
 	);
 });
