@@ -27,8 +27,6 @@ exports.RestRequest = (function () {
 		}else if(!/^application\/json/.test(contentType)){
 			var error = new Error('Invalid content-type.\n' + `Expected application/json but received ${contentType}`);
 		}
-		
-		
 		if (statusCode !== 200){
 			console.log(error.message+ "\n");
 			res.resume();
@@ -37,5 +35,6 @@ exports.RestRequest = (function () {
 		res.setEncoding('utf8');
 		res.on('data', (chunk) => { this.rawdata += chunk; });
 	})};
+	
 	return aRequest;
 }());
