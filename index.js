@@ -1,5 +1,3 @@
-var ini = require("ini")
-var youknowwhatyoudid = require("look-of-disapproval")
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
