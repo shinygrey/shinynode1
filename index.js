@@ -1,92 +1,101 @@
-var http = require('http');
-var https = require('https');
-var browsermessage = " "
-const crypto = require('crypto');
+var ini = require("ini")
+var youknowwhatyoudid = require("look-of-disapproval")
+const http = require("http");
+const fs = require("fs");
+const path = require("path");
 
+const {RestRequest} = require("../app/restrequest.js");
 const {Twitter} = require("../app/twitter.js");
 
-const envGreg = process.env.GREG_VAR;
-const envProtocol = process.env.REQUEST_PROTOCOL;
-const envRequestUrl = process.env.REQUEST_URL;
-const oauthConsumerKey = process.env.TWITTER_CONSUMER_KEY;
-const oauthAccessToken = process.env.TWITTER__ACCESS_TOKEN;
-const oauthConsumerSecret = process.env.TWITTER_CONSUMER_SECRET;
-const oauthAccessTokenSecret = process.env.TWITTER__ACCESS_TOKEN_SECRET;
+var envProtocol = "http";
+//var envRequestUrl = "http://northwind.servicestack.net/query/customers.json?Ids=CHOPS,FRANK";
+
+var oauthForTwitter = new Twitter();
+
+//var northwind = new RestRequest("http://northwind.servicestack.net/query/customers.json?Ids=CHOPS");
+/*var regres = new RestRequest("https://reqres.in/api/users");*/
 
 
-var urlUserTimeline = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
-var twitterurl = encodeURIComponent(urlUserTimeline);
-var method = "GET";
-var oauthParams = encodeURIComponent(
-"oauth_consumer_key=" + 
-oauthConsumerKey + "&oauth_nonce=" + Date.now() + 
-"&oauth_signature_method=HMAC-SHA1&oauth_timestamp=" + Date.now() + "&oauth_token=" + oauthAccessToken
-);
-var oauthBaseString = method + "&" + twitterurl + "&" + oauthParams;
-var oauthSignatureKey = oauthConsumerSecret + "&" + oauthAccessTokenSecret;
+function highOrderExample(){
+	function repeat(n, action) {
+	for (let i = 0; i < n; i++) {
+		action(i);
+	}
+}
+	repeat(2, function(i){
+		labels.push(`Unit ${i + 1}`)
+	});
 
-var hmac = crypto.createHmac('sha1',oauthSignatureKey);
-
-try {
-	hmac.update(oauthBaseString);
-	var oauthSignature = hmac.digest('base64');
-}catch(err){
-	browsermessage = browsermessage +" hmac problem "+err ;
+	repeat(2, i => {
+		labels.push(`Unit ${i + 1}`);
+	});
 }
 
-const httpOptions = {
-	path: 'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=shinygreyltd&count=2',
+
+const twitterOptions = {
+	hostname: 'api.twitter.com',
+	port: 80,
+	path: '/1.1/statuses/user_timeline.json',
 	method: 'GET',
-	host: 'api.twitter.com',
-	headers: {
+	headers:{
+		'Accept': '*/*',
+		'Connection': 'close',
+		'User-Agent': 'OAuth gem v0.4.4',
 		'Content-Type': 'application/x-www-form-urlencoded',
-		'Content-Length':'76',
-		'Authorization': 'OAuth oauth_consumer_key="'+oauthConsumerKey+'", oauth_nonce="'+ Date.now() +'", oauth_signature="'+oauthSignature+'", oauth_signature_method="HMAC-SHA1", oauth_timestamp="'+Date.now()+'", oauth_token="'+oauthAccessToken+'", oauth_version="1.0"'
+		'Authorization':`${oauthForTwitter.getAuth()}`,
+		'Content-Length': 76,
+		'Host': 'api.twitter.com'
 	}
 };
 
-(function getRequest(){
-	if(envProtocol == "https"){var protocol = https;}else{var protocol = http;}
-	protocol.get(envRequestUrl, (res) => {
-		const { statusCode } = res;
-		const contentType = res.headers['content-type'];
+var theTwitterResponse = ""; 
 
-		let error;
-		if (statusCode !== 200){
-			error = new Error('Request Failed.\n' + `Status Code: ${statusCode}`);
-		}else if(!/^application\/json/.test(contentType)){
-			error = new Error('Invalid content-type.\n' + `Expected application/json but received ${contentType}`);
-		}
-		if (error) {
-			browsermessage = browsermessage + "\n 1 \n" +error.message+ "\n";
-		// consume response data to free up memory
+function twitterRest(){
+	https.get('https://api.twitter.com/1.1/statuses/user_timeline.json', twitterOptions, (res) => {
+	const { statusCode } = res;
+	const contentType = res.headers['content-type'];
+	if (statusCode !== 200){
+		var error = new Error('Request Failed.\n' + `Status Code: ${statusCode}`);
+	}else if(!/^application\/json/.test(contentType)){
+		var error = new Error('Invalid content-type.\n' + `Expected application/json but received ${contentType}`);
+	}
+	if (statusCode !== 200){
+		theTwitterResponse += "\nerrors here:\n" + error.message + "\n";
 		res.resume();
 		return;
-		}
-		res.setEncoding('utf8');
-		let rawData = '';
-		res.on('data', (chunk) => { rawData += chunk; });
-		res.on('end', () => {
-		try {
-			const parsedData = JSON.parse(rawData);
-			browsermessage = browsermessage + "\n 2 \n" +rawData+ "\n";
-		} catch (e) {
-			browsermessage = browsermessage + "\n 3 \n" +e.message+ "\n";
-		}
-		});
-	})
-})()
+	}
+	res.setEncoding('utf8');
+	res.on('data', (chunk) => { theTwitterResponse += chunk; });
+})};
 
-var atweet = new Twitter();
 
-var server = http.createServer(function(request, response) {
-	response.writeHead(200, {"Content-Type": "text/plain"});
-	response.end(
-		"Hello Greg!  "+envGreg+" ... \n"
-		+ browsermessage +  "\n"
-		+ atweet.test +  "\n"
-	);
-});
+fs.readFile('C:/Users/Greg/Documents/githubrepos/node-test2/index.html', function (err, html) {
+	if (err){
+		throw err;
+	}
+	http.createServer(function(request, response){
+		response.writeHeader(200, {"Content-Type": "text/html"});
+		var baseurl = request.socket.localAddress;
+		/*
+		var nwdata = JSON.parse(northwind.rawdata);		
+		<p>northwind: ${nwdata.Results[0].Id}</p>		
+		<p>regres: ${regres.rawdata}</p>
+		
+		
+		*/
 	
-var port = process.env.PORT || 1337;
-server.listen(port);
+	var htmlrequestpage = `
+		<html>
+		<body>
+		<h1>Hello!</h1>
+		<p>Twitter:</p>
+		<p>${oauthForTwitter.getAuth()}</p>
+		<p>${theTwitterResponse}</p>
+		</body>
+		</html>
+		`
+		response.write(htmlrequestpage);
+		response.end();
+	}).listen(8000);
+	console.log("Listening! (port 8000)");
+});
