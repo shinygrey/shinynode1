@@ -23,12 +23,13 @@ const RestRequest = {
 		}else{
 			protocol =  http;
 		}
+		this.responseData +="\n"+ protocol.protocol;
 		return protocol;
 	},
 	
 	getRequest: function(){
+	  this.responseData +="\n"+ "get request called";
 		let protocol = this.getProtocol(this.requestUrl);
-		this.responseData +="\n"+ protocol.protocol;
 		protocol.get(this.options, (res) => {
 		this.contentType = res.headers['content-type'];
 		this.statusCode = res.statusCode;
@@ -46,14 +47,17 @@ const RestRequest = {
 		res.setEncoding('utf8');
 		res.on('data', (chunk) => { this.rawrestData += chunk;});
 		this.responseData +="\n"+ this.rawrestData;
+		
 		function handleRequestError(){
 			var error = new Error(`Request Failed. Status Code: ${this.statusCode}`);
 		return error;
 		}
+		
 	})},
 
 
 	checkContentType: function(contentType){
+	  this.responseData +="\n"+ `${contentType}`;
 		if(/^application\/xml/.test(contentType)){
 			console.log("xml");
 		}else if(/^application\/json/.test(contentType)){
