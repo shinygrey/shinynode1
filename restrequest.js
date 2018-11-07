@@ -47,8 +47,8 @@ const RestRequest = {
 		return error;
 		}
 	})},
-	
-	
+
+
 	checkContentType: function(contentType){
 		if(/^application\/xml/.test(contentType)){
 			console.log("xml");
@@ -64,6 +64,7 @@ const RestRequest = {
 exports.RestRequest = RestRequest;
 
 const RestOauth = Object.assign(Object.create(RestRequest),{
+  responseData: "",
 	oauthConsumerKey: process.env.TWITTER_CONSUMER_KEY,
 	oauthAccessToken: process.env.TWITTER_ACCESS_TOKEN,
 	oauthNonce: '',
