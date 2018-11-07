@@ -82,7 +82,8 @@ const RestOauth = Object.assign(Object.create(RestRequest),{
 	},
 	
 	setThenGet: function(){
-		this.getAuth();		
+		this.getAuth();
+		this.getRequest();
 	},
 	
 	randomString: function(length){
