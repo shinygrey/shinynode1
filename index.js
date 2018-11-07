@@ -13,7 +13,7 @@ RestRequest.getRequest()
 http.createServer(function(request, response){
 	response.write(Header(200, {"Content-Type": "text/html"}));
 	console.log(request.url);
-	response.end((`
+	response.write((`
 		<html>
 		<body>
 			<h1>Hello!</h1>
@@ -22,5 +22,6 @@ http.createServer(function(request, response){
 		</body>
 		</html>
 	`).replace(/^\t\t/gm, ''));
+	response.end();
 }).listen(8000);
 console.log("Listening! (port 8000)");
