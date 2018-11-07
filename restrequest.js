@@ -3,17 +3,16 @@ const http = require("http");
 const https = require("https");
 const crypto = require("crypto");
 
-var RestRequest = {
+const RestRequest = {
 	responseData: "",
 	protocol: {},
 	contentType: "",
 	statusCode: 0,
 	requestUrl: "http://northwind.servicestack.net/query/customers.json",
-	requestUrlWithArgs: this.requestUrl+"?Ids=FRANK,CHOPS",
 	options: {
 		method: 'GET',
 		host: 'northwind.servicestack.net',
-		path: '/query/customers.json?Ids=FRANK,CHOPS',
+		path: '/query/customers.json?Ids=COMMI,FRANK,CHOPS',
 		headers: {'Content-Type': 'application/json'}
 	},
 	
@@ -26,7 +25,7 @@ var RestRequest = {
 	},
 	
 	getRequest: function(){
-		this.getProtocol(this.requestUrlWithArgs);
+		this.getProtocol(this.requestUrl);
 		this.protocol.get(this.options, (res) => {
 		this.contentType = res.headers['content-type'];
 		this.statusCode = res.statusCode;
@@ -63,9 +62,9 @@ var RestRequest = {
 
 exports.RestRequest = RestRequest;
 
-var RestOauth = Object.assign(Object.create(RestRequest),{
+const RestOauth = Object.assign(Object.create(RestRequest),{
 	oauthConsumerKey: process.env.TWITTER_CONSUMER_KEY,
-	oauthAccessToken: 'process.env.TWITTER_ACCESS_TOKEN',
+	oauthAccessToken:  process.env.TWITTER_ACCESS_TOKEN,
 	oauthNonce: '',
 	timeStamp:0,
 	requestUrl: "https://api.twitter.com/1.1/statuses/user_timeline.json",
@@ -77,9 +76,10 @@ var RestOauth = Object.assign(Object.create(RestRequest),{
 		headers: {
 			'User-Agent': 'OAuth gem v0.4.4',
 			'Content-Type': 'application/json',
-			'Authorization': getAuth(),
+			'Authorization': "auth not set"
 		}
 	},
+	
 	randomString: function(length){
 		var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 		var result = '';
@@ -87,36 +87,37 @@ var RestOauth = Object.assign(Object.create(RestRequest),{
 		return result;
 	},
 	
-	oauthBaseString: function(requestUrl){
-		this.oauthNonce = this.randomString(32);
+	oauthBaseString: function(){		
 		this.timeStamp = Date.now();
 		
 		var parameters = encodeURIComponent(
 			"oauth_consumer_key=" + this.oauthConsumerKey + "&oauth_nonce=" + this.oauthNonce + "&oauth_signature_method=HMAC-SHA1&oauth_timestamp=" + this.timeStamp + "&oauth_token=" + this.oauthAccessToken + "&oauth_version:1.0"
 		);
-		var baseString = "GET" + "&" + encodeURIComponent(requestUrl) + "&" + parameters;
+		var baseString = "GET" + "&" + encodeURIComponent(this.requestUrl) + "&" + parameters;
 		
 		return baseString;
 	},
 	
-	CreateSignature function(requestUrl){
-		const oauthConsumerSecret = if(process.env.TWITTER_CONSUMER_SECRET != undefined){process.env.TWITTER_CONSUMER_SECRET;}else{this.randomString(50);}
-		const oauthAccessTokenSecret = if(process.env.TWITTER_ACCESS_TOKEN_SECRET != undefined){process.env.TWITTER_ACCESS_TOKEN_SECRET;}else{this.randomString(45);}
+	CreateSignature: function(){
+		const oauthConsumerSecret = process.env.TWITTER_CONSUMER_SECRET;
+		const oauthAccessTokenSecret = process.env.TWITTER_ACCESS_TOKEN_SECRET;
 		var oauthSignatureKey = oauthConsumerSecret+"&"+oauthAccessTokenSecret;
 		var hmac = crypto.createHmac('sha1',oauthSignatureKey);
 		try {
-			hmac.update(this.oauthBaseString(requestUrl));
+			hmac.update(this.oauthBaseString());
 			var oauthSignature = hmac.digest('base64');
 		}catch(err){
 			messages += " hmac problem "+err ;
 		}
-		return oauthSignature;
+		return encodeURIComponent(oauthSignature);
 	},
 	
-	getAuth: function(requestUrl){
-		var result = `OAuth oauth_consumer_key="${this.oauthConsumerKey}",oauth_nonce="${this.oauthNonce}",oauth_signature="${this.CreateSignature(requestUrl)}",oauth_signature_method="HMAC-SHA1",oauth_timestamp="${this.timeStamp}",oauth_token="${this.oauthAccessToken}",oauth_version="1.0"`
-		return result
+	getAuth: function(){
+		this.oauthNonce = this.randomString(32);
+		var result = `OAuth oauth_consumer_key="${this.oauthConsumerKey}",oauth_nonce="${this.oauthNonce}",oauth_signature="${this.CreateSignature()}",oauth_signature_method="HMAC-SHA1",oauth_timestamp="${this.timeStamp}",oauth_token="${this.oauthAccessToken}",oauth_version="1.0"`;
+		this.options.headers.Authorization = result;
 	}
+	
 });
 
 exports.RestOauth = RestOauth;
