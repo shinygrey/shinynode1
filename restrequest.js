@@ -23,7 +23,7 @@ const RestRequest = {
 		}else{
 			protocolToUse =  http;
 		}
-		this.responseData +="\n"+ protocolToUse.protocol;
+		this.responseData +="<p>"+ typeof protocolToUse+"</p>";
 		return protocolToUse;
 	},
 	
