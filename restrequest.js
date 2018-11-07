@@ -16,6 +16,10 @@ const RestRequest = {
 		headers: {'Content-Type': 'application/json'}
 	},
 	
+	setThenGet: function(){
+		this.CreateSignature();
+	},
+	
 	getProtocol: function () {
 		if((url.parse(this.requestUrl)).protocol == "https:"){
 			this.protocol = https;
@@ -65,7 +69,7 @@ exports.RestRequest = RestRequest;
 
 const RestOauth = Object.assign(Object.create(RestRequest),{
 	oauthConsumerKey: process.env.TWITTER_CONSUMER_KEY,
-	oauthAccessToken:  process.env.TWITTER_ACCESS_TOKEN,
+	oauthAccessToken: process.env.TWITTER_ACCESS_TOKEN,
 	oauthNonce: '',
 	timeStamp:0,
 	requestUrl: "https://api.twitter.com/1.1/statuses/user_timeline.json",
@@ -77,7 +81,7 @@ const RestOauth = Object.assign(Object.create(RestRequest),{
 		headers: {
 			'User-Agent': 'OAuth gem v0.4.4',
 			'Content-Type': 'application/json',
-			'Authorization': "auth not set"
+			'Authorization': "auth not defined"
 		}
 	},
 	
