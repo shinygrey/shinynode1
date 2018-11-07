@@ -82,7 +82,7 @@ const RestOauth = Object.assign(Object.create(RestRequest),{
 	},
 	
 	setThenGet: function(){
-		this.CreateSignature();
+		this.getAuth();		
 	},
 	
 	randomString: function(length){
