@@ -6,32 +6,19 @@ const {RestRequest} = require("../app/restrequest.js");
 
 RestRequest.getRequest();
 
-fs.readFile('C:/Users/Greg/Documents/githubrepos/node-test2/index.html', function (err, html) {
-	if (err){
-		throw err;
-	}
-	http.createServer(function(request, response){
-		response.writeHeader(200, {"Content-Type": "text/html"});
-		var baseurl = request.socket.localAddress;
-		/*
-		var nwdata = JSON.parse(northwind.rawdata);		
-		<p>northwind: ${nwdata.Results[0].Id}</p>		
-		<p>regres: ${regres.rawdata}</p>
-		
-		
-		*/
-	
-	var htmlrequestpage = `
+http.createServer(function(request, response){
+	response.writeHeader(200, {"Content-Type": "text/html"});
+	console.log(request.url);
+	response.end((`
 		<html>
 		<body>
-		<h1>Hello!</h1>
-		<p>Data:</p>
-		<p>${RestRequest.responseData}</p>
+			<h1>Hello!</h1>
+			<p>request.socket.localAddress ${request.socket.localAddress}</p>
+			<p>${timesRan}</p>
+			<p>Object based request:</p>
+			<p>${RestRequest.responseData}</p>
 		</body>
 		</html>
-		`
-		response.write(htmlrequestpage);
-		response.end();
-	}).listen(8000);
-	console.log("Listening! (port 8000)");
-});
+	`).replace(/^\t\t/gm, ''));
+}).listen(8000);
+console.log("Listening! (port 8000)");
