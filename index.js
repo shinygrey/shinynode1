@@ -6,6 +6,7 @@ const {RestRequest} = require("../app/restrequest.js");
 const {RestOauth} = require("../app/restrequest.js");
 
 RestRequest.getRequest();
+RestOauth.getRequest();
 
 http.createServer(function(request, response){
 	response.writeHead(200, {"Content-Type": "text/html"});
