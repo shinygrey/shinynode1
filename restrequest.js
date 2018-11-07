@@ -28,36 +28,34 @@ const RestRequest = {
 	},
 	
 	getRequest: function(){
-	  this.responseData +="\n"+ "get request called";
-		var protocol = this.getProtocol(this.requestUrl);
-		
-		try{
-		protocol.get(this.options, (res) => {
-		this.contentType = res.headers['content-type'];
-		this.statusCode = res.statusCode;
-		var error;
-		if (this.statusCode !== 200){
-			error = this.handleRequestError();
-		}else{
-			error = this.checkContentType(this.contentType);
-		}
-		if(error){
-			this.responseData +="\n"+ "Error:\n"+error.message;
-			res.resume();
-			return;
-		}
-		this.responseData +="\n"+ "past error checking";
-		res.setEncoding('utf8');
-		res.on('data', (chunk) => { this.rawrestData += chunk;});
-		this.responseData +="\n"+ this.rawrestData;
-		
-		function handleRequestError(){
-			var error = new Error(`Request Failed. Status Code: ${this.statusCode}`);
-		return error;
-		}
-		
-	});
-	}catch(err){this.responseData +="<p>get request catch "+err+"</p>";}
+  	  this.responseData +="\n"+ "get request called";
+  		var protocol = this.getProtocol(this.requestUrl);
+  		try{
+    		protocol.get(this.options, (res) => {
+    		this.contentType = res.headers['content-type'];
+    		this.statusCode = res.statusCode;
+    		var error;
+    		if (this.statusCode !== 200){
+    			error = this.handleRequestError();
+    		}else{
+    			error = this.checkContentType(this.contentType);
+    		}
+    		if(error){
+    			this.responseData +="\n"+ "Error:\n"+error.message;
+    			res.resume();
+    			return;
+    		}
+    		this.responseData +="\n"+ "past error checking";
+    		res.setEncoding('utf8');
+    		res.on('data', (chunk) => { this.rawrestData += chunk;});
+    		this.responseData +="\n"+ this.rawrestData;
+    		
+    		function handleRequestError(){
+    			var error = new Error(`Request Failed. Status Code: ${this.statusCode}`);
+    		return error;
+    		}
+    	});
+  	}catch(err){this.responseData +="<p>get request catch "+err+"</p>";}
 	},
 
 
@@ -97,6 +95,38 @@ const RestOauth = Object.assign(Object.create(RestRequest),{
 			'Authorization': "auth not defined"
 		}
 	},
+	
+		getRequest: function(){
+  	  this.responseData +="\n"+ "get request called";
+  		var protocol = this.getProtocol(this.requestUrl);
+  		try{
+    		protocol.get(this.options, (res) => {
+    		this.contentType = res.headers['content-type'];
+    		this.statusCode = res.statusCode;
+    		var error;
+    		if (this.statusCode !== 200){
+    			error = this.handleRequestError();
+    		}else{
+    			error = this.checkContentType(this.contentType);
+    		}
+    		if(error){
+    			this.responseData +="\n"+ "Error:\n"+error.message;
+    			res.resume();
+    			return;
+    		}
+    		this.responseData +="\n"+ "past error checking";
+    		res.setEncoding('utf8');
+    		res.on('data', (chunk) => { this.rawrestData += chunk;});
+    		this.responseData +="\n"+ this.rawrestData;
+    		
+    		function handleRequestError(){
+    			var error = new Error(`Request Failed. Status Code: ${this.statusCode}`);
+    		return error;
+    		}
+    	});
+  	}catch(err){this.responseData +="<p>get request catch "+err+"</p>";}
+	},
+	
 	
 	setThenGet: function(){
 		this.getAuth();
