@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 const {RestRequest} = require("../app/restrequest.js");
+const {RestOauth} = require("../app/restrequest.js");
 
 RestRequest.getRequest();
 
