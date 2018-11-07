@@ -12,7 +12,7 @@ RestRequest.getRequest()
 
 http.createServer(function(request, response){
 	response.writeHead(200, {"Content-Type": "text/html"});
-	response.write((`
+	response.end((`
 		<html>
 		<body>
 			<h1>Hello!</h1>
@@ -21,5 +21,19 @@ http.createServer(function(request, response){
 		</body>
 		</html>
 	`).replace(/^\t\t/gm, ''));
-	response.end();
-}).listen(1337);
+}).listen(process.env.PORT);
+
+
+/*
+var server = http.createServer(function(request, response) {
+	response.writeHead(200, {"Content-Type": "text/plain"});
+	response.end(
+		"Hello Greg!  "+envGreg+" ... \n"
+		+ browsermessage +  "\n"
+		+ atweet.test +  "\n"
+	);
+});
+	
+var port = process.env.PORT || 1337;
+server.listen(port);
+*/
