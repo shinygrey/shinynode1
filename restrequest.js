@@ -1,8 +1,3 @@
-const url = require('url');
-const http = require("http");
-const https = require("https");
-const crypto = require("crypto");
-
 const RestRequest = {
 	responseData: "",
 	protocol: {},
@@ -29,11 +24,12 @@ const RestRequest = {
 		this.protocol.get(this.options, (res) => {
 		this.contentType = res.headers['content-type'];
 		this.statusCode = res.statusCode;
+		var error;
 		if (this.statusCode !== 200){
-			var error = this.handleRequestError();
+			error = this.handleRequestError();
 		}else{
-			var error = this.checkContentType(this.contentType)
-		};
+			error = this.checkContentType(this.contentType);
+		}
 		if(error){
 			console.log("Error:\n"+error.message);
 			res.resume();
@@ -44,15 +40,15 @@ const RestRequest = {
 		function handleRequestError(){
 			var error = new Error(`Request Failed. Status Code: ${this.statusCode}`);
 		return error;
-		};
+		}
 	})},
 	
 	
 	checkContentType: function(contentType){
 		if(/^application\/xml/.test(contentType)){
-			console.log("xml")
+			console.log("xml");
 		}else if(/^application\/json/.test(contentType)){
-			console.log("json")
+			console.log("json");
 		}else{
 			var error = new Error(`Invalid content-type. Expected application/json but received ${contentType}`);
 			return error;
@@ -99,13 +95,14 @@ const RestOauth = Object.assign(Object.create(RestRequest),{
 	},
 	
 	CreateSignature: function(){
+	  var oauthSignature = '';
 		const oauthConsumerSecret = process.env.TWITTER_CONSUMER_SECRET;
 		const oauthAccessTokenSecret = process.env.TWITTER_ACCESS_TOKEN_SECRET;
 		var oauthSignatureKey = oauthConsumerSecret+"&"+oauthAccessTokenSecret;
 		var hmac = crypto.createHmac('sha1',oauthSignatureKey);
 		try {
 			hmac.update(this.oauthBaseString());
-			var oauthSignature = hmac.digest('base64');
+			oauthSignature = hmac.digest('base64');
 		}catch(err){
 			messages += " hmac problem "+err ;
 		}
