@@ -4,7 +4,7 @@ const path = require("path");
 
 const {RestRequest} = require("../app/restrequest.js");
 
-RestRequest.getRequest();
+//RestRequest.getRequest();
 
 http.createServer(function(request, response){
 	response.writeHeader(200, {"Content-Type": "text/html"});
