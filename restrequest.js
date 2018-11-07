@@ -15,11 +15,7 @@ const RestRequest = {
 		path: '/query/customers.json?Ids=COMMI,FRANK,CHOPS',
 		headers: {'Content-Type': 'application/json'}
 	},
-	
-	setThenGet: function(){
-		this.CreateSignature();
-	},
-	
+		
 	getProtocol: function () {
 		if((url.parse(this.requestUrl)).protocol == "https:"){
 			this.protocol = https;
@@ -83,6 +79,10 @@ const RestOauth = Object.assign(Object.create(RestRequest),{
 			'Content-Type': 'application/json',
 			'Authorization': "auth not defined"
 		}
+	},
+	
+	setThenGet: function(){
+		this.CreateSignature();
 	},
 	
 	randomString: function(length){
