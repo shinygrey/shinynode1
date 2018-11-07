@@ -15,7 +15,7 @@ http.createServer(function(request, response){
 			<h1>Hello!</h1>
 			<p>Object based request:</p>
 			<p>${RestRequest.responseData}</p>
-			<p>empty</p>
+			<p>${RestRequest.rawrestData}</p>
 
 		</body>
 		</html>
