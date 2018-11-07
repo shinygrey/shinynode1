@@ -5,7 +5,7 @@ const crypto = require("crypto");
 
 const RestRequest = {
 	responseData: "",
-	protocol: {},
+	rawrestData: "",
 	contentType: "",
 	statusCode: 0,
 	requestUrl: "http://northwind.servicestack.net/query/customers.json",
@@ -16,17 +16,19 @@ const RestRequest = {
 		headers: {'Content-Type': 'application/json'}
 	},
 		
-	getProtocol: function () {
-		if((url.parse(this.requestUrl)).protocol == "https:"){
-			this.protocol = https;
+	getProtocol: function (urlToCheck) {
+	  let protocol = {};
+		if((url.parse(urlToCheck)).protocol == "https:"){
+			protocol = https;
 		}else{
-			this.protocol =  http;
+			protocol =  http;
 		}
+		return protocol;
 	},
 	
 	getRequest: function(){
-		this.getProtocol(this.requestUrl);
-		this.protocol.get(this.options, (res) => {
+		let protocol = this.getProtocol(this.requestUrl);
+		protocol.get(this.options, (res) => {
 		this.contentType = res.headers['content-type'];
 		this.statusCode = res.statusCode;
 		var error;
@@ -36,12 +38,13 @@ const RestRequest = {
 			error = this.checkContentType(this.contentType);
 		}
 		if(error){
-			console.log("Error:\n"+error.message);
+			this.responseData += "Error:\n"+error.message;
 			res.resume();
 			return;
 		}
 		res.setEncoding('utf8');
-		res.on('data', (chunk) => { this.responseData += chunk;});
+		res.on('data', (chunk) => { this.rawrestData += chunk;});
+		this.responseData += this.rawrestData;
 		function handleRequestError(){
 			var error = new Error(`Request Failed. Status Code: ${this.statusCode}`);
 		return error;
@@ -65,6 +68,9 @@ exports.RestRequest = RestRequest;
 
 const RestOauth = Object.assign(Object.create(RestRequest),{
   responseData: "",
+  rawrestData: "",
+  contentType: "",
+	statusCode: 0,
 	oauthConsumerKey: process.env.TWITTER_CONSUMER_KEY,
 	oauthAccessToken: process.env.TWITTER_ACCESS_TOKEN,
 	oauthNonce: '',
@@ -94,7 +100,7 @@ const RestOauth = Object.assign(Object.create(RestRequest),{
 		return result;
 	},
 	
-	oauthBaseString: function(){		
+	oauthBaseString: function(){
 		this.timeStamp = Date.now();
 		
 		var parameters = encodeURIComponent(
