@@ -17,19 +17,19 @@ const RestRequest = {
 	},
 		
 	getProtocol: function (urlToCheck) {
-	  let protocol = {};
+	  var protocolToUse = {};
 		if((url.parse(urlToCheck)).protocol == "https:"){
-			protocol = https;
+			protocolToUse = https;
 		}else{
-			protocol =  http;
+			protocolToUse =  http;
 		}
-		this.responseData +="\n"+ protocol.protocol;
-		return protocol;
+		this.responseData +="\n"+ protocolToUse.protocol;
+		return protocolToUse;
 	},
 	
 	getRequest: function(){
 	  this.responseData +="\n"+ "get request called";
-		let protocol = this.getProtocol(this.requestUrl);
+		var protocol = this.getProtocol(this.requestUrl);
 		protocol.get(this.options, (res) => {
 		this.contentType = res.headers['content-type'];
 		this.statusCode = res.statusCode;
@@ -44,6 +44,7 @@ const RestRequest = {
 			res.resume();
 			return;
 		}
+		this.responseData +="\n"+ "past error checking";
 		res.setEncoding('utf8');
 		res.on('data', (chunk) => { this.rawrestData += chunk;});
 		this.responseData +="\n"+ this.rawrestData;
