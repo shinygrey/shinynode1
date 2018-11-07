@@ -6,7 +6,6 @@ const {RestRequest} = require("../app/restrequest.js");
 const {RestOauth} = require("../app/restrequest.js");
 
 RestRequest.getRequest();
-RestOauth.setThenGet();
 
 http.createServer(function(request, response){
 	response.writeHead(200, {"Content-Type": "text/html"});
@@ -16,7 +15,7 @@ http.createServer(function(request, response){
 			<h1>Hello!</h1>
 			<p>Object based request:</p>
 			<p>${RestRequest.responseData}</p>
-			<p>${RestOauth.options.headers.Authorization}</p>
+			<p>${RestOauth.responseData}</p>
 
 		</body>
 		</html>
