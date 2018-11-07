@@ -13,8 +13,6 @@ http.createServer(function(request, response){
 		<html>
 		<body>
 			<h1>Hello!</h1>
-			<p>request.socket.localAddress ${request.socket.localAddress}</p>
-			<p>${timesRan}</p>
 			<p>Object based request:</p>
 			<p>${RestRequest.responseData}</p>
 		</body>
