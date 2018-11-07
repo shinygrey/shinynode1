@@ -28,6 +28,7 @@ const RestRequest = {
 	
 	getRequest: function(){
 		let protocol = this.getProtocol(this.requestUrl);
+		this.responseData +="\n"+ protocol.protocol;
 		protocol.get(this.options, (res) => {
 		this.contentType = res.headers['content-type'];
 		this.statusCode = res.statusCode;
@@ -38,13 +39,13 @@ const RestRequest = {
 			error = this.checkContentType(this.contentType);
 		}
 		if(error){
-			this.responseData += "Error:\n"+error.message;
+			this.responseData +="\n"+ "Error:\n"+error.message;
 			res.resume();
 			return;
 		}
 		res.setEncoding('utf8');
 		res.on('data', (chunk) => { this.rawrestData += chunk;});
-		this.responseData += this.rawrestData;
+		this.responseData +="\n"+ this.rawrestData;
 		function handleRequestError(){
 			var error = new Error(`Request Failed. Status Code: ${this.statusCode}`);
 		return error;
