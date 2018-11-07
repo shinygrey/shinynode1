@@ -30,6 +30,8 @@ const RestRequest = {
 	getRequest: function(){
 	  this.responseData +="\n"+ "get request called";
 		var protocol = this.getProtocol(this.requestUrl);
+		
+		try{
 		protocol.get(this.options, (res) => {
 		this.contentType = res.headers['content-type'];
 		this.statusCode = res.statusCode;
@@ -54,7 +56,9 @@ const RestRequest = {
 		return error;
 		}
 		
-	})},
+	});
+	}catch(err){this.responseData +="<p>get request catch "+err+"</p>";}
+	},
 
 
 	checkContentType: function(contentType){
