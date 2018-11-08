@@ -5,66 +5,76 @@ const crypto = require("crypto");
 
 const RestRequest = {
 	responseData: "",
-	rawrestData: "",
 	contentType: "",
 	statusCode: 0,
+	serverResponse: '',
 	requestUrl: "http://northwind.servicestack.net/query/customers.json",
 	options: {
 		method: 'GET',
 		host: 'northwind.servicestack.net',
-		path: '/query/customers.json?Ids=COMMI,FRANK,CHOPS',
-		headers: {'Content-Type': 'application/json'}
+		path: '/query/customers.json?Ids=COMMI', //FRANK,CHOPS
+		headers: {
+			'Content-Type': 'application/json',
+			'Authorization': "auth not set"
+		}
 	},
-		
-	getProtocol: function (urlToCheck) {
-	  var protocolToUse = {};
-		if((url.parse(urlToCheck)).protocol == "https:"){
+	
+	getProtocol: function (requestUrl){
+		var protocolToUse;
+		if((url.parse(requestUrl)).protocol == "https:"){
 			protocolToUse = https;
 		}else{
-			protocolToUse =  http;
+			protocolToUse = http;
 		}
-		this.responseData +="<p>"+ typeof protocolToUse+"</p>";
 		return protocolToUse;
 	},
 	
-	getRequest: function(){
-  	  this.responseData +="\n"+ "get request called";
-  		var protocol = this.getProtocol(this.requestUrl);
-  		try{
-    		protocol.get(this.options, (res) => {
-    		this.contentType = res.headers['content-type'];
-    		this.statusCode = res.statusCode;
-    		var error;
-    		if (this.statusCode !== 200){
-    			error = this.handleRequestError();
-    		}else{
-    			error = this.checkContentType(this.contentType);
-    		}
-    		if(error){
-    			this.responseData +="\n"+ "Error:\n"+error.message;
-    			res.resume();
-    			return;
-    		}
-    		this.responseData +="\n"+ "past error checking";
-    		res.setEncoding('utf8');
-    		res.on('data', (chunk) => { this.rawrestData += chunk;});
-    		this.responseData +="\n"+ this.rawrestData;
-    		
-    		function handleRequestError(){
-    			var error = new Error(`Request Failed. Status Code: ${this.statusCode}`);
-    		return error;
-    		}
-    	});
-  	}catch(err){this.responseData +="<p>get request catch "+err+"</p>";}
+	getAuth: function(){
+		var result = `none`;
+		this.options.headers.Authorization = result;
 	},
+	
+	sendRequest: function(){
+		var protocol = this.getProtocol(this.requestUrl);
+		this.getAuth();
+		protocol.get(this.options, (res) => {
+			this.contentType = res.headers['content-type'];
+			this.statusCode = res.statusCode;
+			
+			for (var key in res.headers) {
+				if (Object.prototype.hasOwnProperty.call(res.headers, key)){
+					var val = res.headers[key];
+					this.serverResponse += `<p>${key} - ${val}</p>`;
+				}
+			}
+			if (this.statusCode !== 200){
+				res.setEncoding('utf8');
+				res.on('data', (chunk) => { this.responseData += chunk;});
+				var error = handleRequestError(this.statusCode);
+			}else{
+				var error = this.checkContentType(this.contentType)
+			};
+			if(error){
+				console.log("Error:\n"+error.message);
+				res.resume();
+				return;
+			}
+			res.setEncoding('utf8');
+			res.on('data', (chunk) => { this.responseData += chunk;});
 
-
+			function handleRequestError(errorStatusCode){
+				var error = new Error(`Request Failed. Status Code: ${errorStatusCode}`);
+			return error;
+			};
+		})
+	},
+	
+	
 	checkContentType: function(contentType){
-	  this.responseData +="\n"+ `${contentType}`;
 		if(/^application\/xml/.test(contentType)){
-			console.log("xml");
+			//console.log("xml")
 		}else if(/^application\/json/.test(contentType)){
-			console.log("json");
+			//console.log("json")
 		}else{
 			var error = new Error(`Invalid content-type. Expected application/json but received ${contentType}`);
 			return error;
@@ -75,63 +85,47 @@ const RestRequest = {
 exports.RestRequest = RestRequest;
 
 const RestOauth = Object.assign(Object.create(RestRequest),{
-  responseData: "",
-  rawrestData: "",
-  contentType: "",
+	responseData: "",
+	contentType: "",
 	statusCode: 0,
-	oauthConsumerKey: process.env.TWITTER_CONSUMER_KEY,
-	oauthAccessToken: process.env.TWITTER_ACCESS_TOKEN,
+	serverResponse: '',
 	oauthNonce: '',
+	oauthConsumerKey: encodeURIComponent(''),
+	oauthAccessToken: encodeURIComponent(''),
+	oauthConsumerSecret: encodeURIComponent(''),
+	oauthAccessTokenSecret: encodeURIComponent(''),
+	count: 1,
+	screenName: 'shinygreyltd',
 	timeStamp:0,
-	requestUrl: "https://api.twitter.com/1.1/statuses/user_timeline.json",
-	requestUrlWithArgs: this.requestUrl,
+	requestUrl: "https://reqres.in/api/users",
 	options: {
 		method: 'GET',
-		host: 'api.twitter.com',
-		path: '/1.1/statuses/user_timeline.json',
+		host: 'reqres.in',
+		path: '/api/users',
 		headers: {
-			'User-Agent': 'OAuth gem v0.4.4',
-			'Content-Type': 'application/json',
-			'Authorization': "auth not defined"
+			'Authorization': "auth not set"
 		}
 	},
 	
-		getRequest: function(){
-  	  this.responseData +="\n"+ "get request called";
-  		var protocol = this.getProtocol(this.requestUrl);
-  		try{
-    		protocol.get(this.options, (res) => {
-    		this.contentType = res.headers['content-type'];
-    		this.statusCode = res.statusCode;
-    		var error;
-    		if (this.statusCode !== 200){
-    			error = this.handleRequestError();
-    		}else{
-    			error = this.checkContentType(this.contentType);
-    		}
-    		if(error){
-    			this.responseData +="\n"+ "Error:\n"+error.message;
-    			res.resume();
-    			return;
-    		}
-    		this.responseData +="\n"+ "past error checking";
-    		res.setEncoding('utf8');
-    		res.on('data', (chunk) => { this.rawrestData += chunk;});
-    		this.responseData +="\n"+ this.rawrestData;
-    		
-    		function handleRequestError(){
-    			var error = new Error(`Request Failed. Status Code: ${this.statusCode}`);
-    		return error;
-    		}
-    	});
-  	}catch(err){this.responseData +="<p>get request catch "+err+"</p>";}
+	getAuth: function(){
+		this.timeStamp = Math.floor(Date.now() / 1000);
+		this.oauthNonce = this.randomString(32);
+		var result = `OAuth oauth_consumer_key="${this.oauthConsumerKey}", oauth_nonce="${this.oauthNonce}", oauth_signature_method="HMAC-SHA1", oauth_token="${this.oauthAccessToken}", oauth_timestamp="${this.timeStamp}", oauth_version="1.0", oauth_signature="${this.CreateSignature()}"`;
+		this.options.headers.Authorization = result;
 	},
 	
-	
-	setThenGet: function(){
-		this.getAuth();
-		this.getRequest();
+	CreateSignature: function(){
+		var oauthSignatureKey = this.oauthConsumerSecret+"&"+this.oauthAccessTokenSecret;
+		var hmac = crypto.createHmac('sha1',oauthSignatureKey);
+		try {
+			hmac.update(this.oauthBaseString());
+			var oauthSignature = hmac.digest('base64');
+		}catch(err){
+			console.log(" hmac problem "+err);
+		}
+		return encodeURIComponent(oauthSignature);
 	},
+	
 	
 	randomString: function(length){
 		var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -141,37 +135,34 @@ const RestOauth = Object.assign(Object.create(RestRequest),{
 	},
 	
 	oauthBaseString: function(){
-		this.timeStamp = Date.now();
-		
-		var parameters = encodeURIComponent(
-			"oauth_consumer_key=" + this.oauthConsumerKey + "&oauth_nonce=" + this.oauthNonce + "&oauth_signature_method=HMAC-SHA1&oauth_timestamp=" + this.timeStamp + "&oauth_token=" + this.oauthAccessToken + "&oauth_version:1.0"
-		);
-		var baseString = "GET" + "&" + encodeURIComponent(this.requestUrl) + "&" + parameters;
-		
+		var baseString = `GET&${encodeURIComponent(this.requestUrl)}&count%3D${this.count}%26oauth_consumer_key%3D${this.oauthConsumerKey}%26oauth_nonce%3D${this.oauthNonce}%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D${this.timeStamp}%26oauth_token%3D${this.oauthAccessToken}%26oauth_version%3D1.0%26screen_name%3D${this.screenName}`
 		return baseString;
 	},
-	
-	CreateSignature: function(){
-	  var oauthSignature = '';
-		const oauthConsumerSecret = process.env.TWITTER_CONSUMER_SECRET;
-		const oauthAccessTokenSecret = process.env.TWITTER_ACCESS_TOKEN_SECRET;
-		var oauthSignatureKey = oauthConsumerSecret+"&"+oauthAccessTokenSecret;
-		var hmac = crypto.createHmac('sha1',oauthSignatureKey);
-		try {
-			hmac.update(this.oauthBaseString());
-			oauthSignature = hmac.digest('base64');
-		}catch(err){
-			messages += " hmac problem "+err ;
-		}
-		return encodeURIComponent(oauthSignature);
-	},
-	
-	getAuth: function(){
-		this.oauthNonce = this.randomString(32);
-		var result = `OAuth oauth_consumer_key="${this.oauthConsumerKey}",oauth_nonce="${this.oauthNonce}",oauth_signature="${this.CreateSignature()}",oauth_signature_method="HMAC-SHA1",oauth_timestamp="${this.timeStamp}",oauth_token="${this.oauthAccessToken}",oauth_version="1.0"`;
-		this.options.headers.Authorization = result;
-	}
-	
+
 });
 
 exports.RestOauth = RestOauth;
+
+const TwitterRequest = Object.assign(Object.create(RestOauth),{
+	responseData: "",
+	contentType: "",
+	statusCode: 0,
+	oauthNonce: '',
+	timeStamp: 0,
+	serverResponse: '',
+	requestUrl: "https://api.twitter.com/1.1/statuses/user_timeline.json",
+	options: {
+		method: 'GET',
+		host: 'api.twitter.com',
+		path: '/1.1/statuses/user_timeline.json?screen_name=shinygreyltd&count=1',
+		headers: {
+			'Authorization': "auth not set"
+		}
+	},
+	oauthConsumerKey: encodeURIComponent(process.env.TWITTER_CONSUMER_KEY),
+	oauthAccessToken: encodeURIComponent(process.env.TWITTER_ACCESS_TOKEN),
+	oauthConsumerSecret: encodeURIComponent(process.env.TWITTER_CONSUMER_SECRET),
+	oauthAccessTokenSecret: encodeURIComponent(process.env.TWITTER_ACCESS_TOKEN_SECRET),
+});
+
+exports.TwitterRequest = TwitterRequest;
