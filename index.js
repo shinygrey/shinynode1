@@ -11,11 +11,10 @@ RestRequest.sendRequest();
 
 http.createServer(function(request, response){
 	response.writeHeader(200, {"Content-Type": "text/html"});
-	console.log(request.url);
+	/*<p>${request.socket.localAddress}</p>*/
 	response.end((`
 		<html>
-		<body>
-			<p>${request.socket.localAddress}</p>
+		<body>			
 			<h1>Requests</h1>
 			<p>${RestOauth.responseData}</p>
 			<p></p>
