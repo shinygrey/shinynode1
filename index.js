@@ -1,27 +1,28 @@
 const http = require("http");
+const https = require("https");
 const fs = require("fs");
 const path = require("path");
 
-const {RestRequest} = require("../app/restrequest.js");
-const {RestOauth} = require("../app/restrequest.js");
+const {RestRequest, RestOauth, TwitterRequest} = require("./restrequest");
 
-RestRequest.getRequest();
-RestOauth.getRequest();
+RestOauth.sendRequest();
+TwitterRequest.sendRequest();
+RestRequest.sendRequest();
 
 http.createServer(function(request, response){
-	response.writeHead(200, {"Content-Type": "text/html"});
+	response.writeHeader(200, {"Content-Type": "text/html"});
+	console.log(request.url);
 	response.end((`
 		<html>
 		<body>
-			<h1>Hello!</h1>
-			<p>Object based request:</p>
-			<p>northwind</p>
-			<p>${RestRequest.responseData}</p>
-			<p>${RestRequest.rawrestData}</p>
-			<p>twitter</p>
+			<p>${request.socket.localAddress}</p>
+			<h1>Requests</h1>
 			<p>${RestOauth.responseData}</p>
-			<p>${RestOauth.rawrestData}</p>
-
+			<p></p>
+			<p>Twitter Request:</p>
+			<p>${TwitterRequest.responseData}</p>			
+			<p></p>
+			<p>${RestRequest.responseData}</p>
 		</body>
 		</html>
 	`).replace(/^\t\t/gm, ''));
