@@ -56,7 +56,7 @@
 				for (var i = 0; i < result.length; i++) {
 					tweets += '<p>'+result[i].text+'</p>' + '\r\n';
 				}
-				$(tweets).appendTo("main");
+				$.parseHTML(tweets).appendTo("main");
 			}
 		});
 	});
