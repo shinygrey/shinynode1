@@ -3,22 +3,29 @@ const http = require("http");
 const https = require("https");
 const crypto = require("crypto");
 
-const RestRequest = {
+exports.twitterRequest = {
 	responseData: "",
 	contentType: "",
 	statusCode: 0,
+	oauthNonce: '',
+	timeStamp: 0,
+	count: 1,
+	screenName: 'shinygreyltd',
 	serverResponse: '',
-	requestUrl: "http://northwind.servicestack.net/query/customers.json",
+	requestUrl: "https://api.twitter.com/1.1/statuses/user_timeline.json",
 	options: {
 		method: 'GET',
-		host: 'northwind.servicestack.net',
-		path: '/query/customers.json?Ids=COMMI', //FRANK,CHOPS
+		host: 'api.twitter.com',
+		path: '/1.1/statuses/user_timeline.json?screen_name=shinygreyltd&count=1',
 		headers: {
-			'Content-Type': 'application/json',
 			'Authorization': "auth not set"
 		}
 	},
-	
+	oauthConsumerKey: encodeURIComponent(process.env.TWITTER_CONSUMER_KEY),
+	oauthAccessToken: encodeURIComponent(process.env.TWITTER_ACCESS_TOKEN),
+	oauthConsumerSecret: encodeURIComponent(process.env.TWITTER_CONSUMER_SECRET),
+	oauthAccessTokenSecret: encodeURIComponent(process.env.TWITTER_ACCESS_TOKEN_SECRET),
+
 	getProtocol: function (requestUrl){
 		var protocolToUse;
 		if((url.parse(requestUrl)).protocol == "https:"){
@@ -28,12 +35,7 @@ const RestRequest = {
 		}
 		return protocolToUse;
 	},
-	
-	getAuth: function(){
-		var result = `none`;
-		this.options.headers.Authorization = result;
-	},
-	
+
 	sendRequest: function(){
 		var protocol = this.getProtocol(this.requestUrl);
 		this.getAuth();
@@ -68,8 +70,7 @@ const RestRequest = {
 			};
 		})
 	},
-	
-	
+
 	checkContentType: function(contentType){
 		if(/^application\/xml/.test(contentType)){
 			//console.log("xml")
@@ -79,42 +80,16 @@ const RestRequest = {
 			var error = new Error(`Invalid content-type. Expected application/json but received ${contentType}`);
 			return error;
 		}
-	}
-};
-
-exports.RestRequest = RestRequest;
-
-const RestOauth = Object.assign(Object.create(RestRequest),{
-	responseData: "",
-	contentType: "",
-	statusCode: 0,
-	serverResponse: '',
-	oauthNonce: '',
-	oauthConsumerKey: encodeURIComponent(''),
-	oauthAccessToken: encodeURIComponent(''),
-	oauthConsumerSecret: encodeURIComponent(''),
-	oauthAccessTokenSecret: encodeURIComponent(''),
-	count: 1,
-	screenName: 'shinygreyltd',
-	timeStamp:0,
-	requestUrl: "https://reqres.in/api/users",
-	options: {
-		method: 'GET',
-		host: 'reqres.in',
-		path: '/api/users',
-		headers: {
-			'Authorization': "auth not set"
-		}
 	},
-	
+
 	getAuth: function(){
 		this.timeStamp = Math.floor(Date.now() / 1000);
 		this.oauthNonce = this.randomString(32);
-		var result = `OAuth oauth_consumer_key="${this.oauthConsumerKey}", oauth_nonce="${this.oauthNonce}", oauth_signature_method="HMAC-SHA1", oauth_token="${this.oauthAccessToken}", oauth_timestamp="${this.timeStamp}", oauth_version="1.0", oauth_signature="${this.CreateSignature()}"`;
+		var result = `OAuth oauth_consumer_key="${this.oauthConsumerKey}", oauth_nonce="${this.oauthNonce}", oauth_signature_method="HMAC-SHA1", oauth_token="${this.oauthAccessToken}", oauth_timestamp="${this.timeStamp}", oauth_version="1.0", oauth_signature="${this.createSignature()}"`;
 		this.options.headers.Authorization = result;
 	},
-	
-	CreateSignature: function(){
+
+	createSignature: function(){
 		var oauthSignatureKey = this.oauthConsumerSecret+"&"+this.oauthAccessTokenSecret;
 		var hmac = crypto.createHmac('sha1',oauthSignatureKey);
 		try {
@@ -125,44 +100,17 @@ const RestOauth = Object.assign(Object.create(RestRequest),{
 		}
 		return encodeURIComponent(oauthSignature);
 	},
-	
-	
+
 	randomString: function(length){
 		var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 		var result = '';
 		for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
 		return result;
 	},
-	
+
 	oauthBaseString: function(){
 		var baseString = `GET&${encodeURIComponent(this.requestUrl)}&count%3D${this.count}%26oauth_consumer_key%3D${this.oauthConsumerKey}%26oauth_nonce%3D${this.oauthNonce}%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D${this.timeStamp}%26oauth_token%3D${this.oauthAccessToken}%26oauth_version%3D1.0%26screen_name%3D${this.screenName}`
 		return baseString;
-	},
+	}
 
-});
-
-exports.RestOauth = RestOauth;
-
-const TwitterRequest = Object.assign(Object.create(RestOauth),{
-	responseData: "",
-	contentType: "",
-	statusCode: 0,
-	oauthNonce: '',
-	timeStamp: 0,
-	serverResponse: '',
-	requestUrl: "https://api.twitter.com/1.1/statuses/user_timeline.json",
-	options: {
-		method: 'GET',
-		host: 'api.twitter.com',
-		path: '/1.1/statuses/user_timeline.json?screen_name=shinygreyltd&count=1',
-		headers: {
-			'Authorization': "auth not set"
-		}
-	},
-	oauthConsumerKey: encodeURIComponent(process.env.TWITTER_CONSUMER_KEY),
-	oauthAccessToken: encodeURIComponent(process.env.TWITTER_ACCESS_TOKEN),
-	oauthConsumerSecret: encodeURIComponent(process.env.TWITTER_CONSUMER_SECRET),
-	oauthAccessTokenSecret: encodeURIComponent(process.env.TWITTER_ACCESS_TOKEN_SECRET),
-});
-
-exports.TwitterRequest = TwitterRequest;
+};

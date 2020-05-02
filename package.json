@@ -1,11 +1,13 @@
 {
-    "name": "app-service-hello-world",
-    "description": "Simple Hello World Node.js sample for Azure App Service",
-    "version": "0.0.1",
+    "name": "shinynode1",
+    "description": "Node JS demo ",
+    "version": "0.1.1",
     "private": true,
-    "license": "MIT",
-    "author": "Microsoft",
+    "author": "Shiny Grey Ltd",
     "scripts": {
-        "start": "node index.js"
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "express": "^4.17.1"
     }
 }
