@@ -9,14 +9,14 @@ exports.twitterRequest = {
 	statusCode: 0,
 	oauthNonce: '',
 	timeStamp: 0,
-	count: 1,
+	count: 4,
 	screenName: 'shinygreyltd',
 	serverResponse: '',
 	requestUrl: "https://api.twitter.com/1.1/statuses/user_timeline.json",
 	options: {
 		method: 'GET',
 		host: 'api.twitter.com',
-		path: '/1.1/statuses/user_timeline.json?screen_name=shinygreyltd&count=1',
+		path: '/1.1/statuses/user_timeline.json?screen_name=shinygreyltd&count=0'+this.count,
 		headers: {
 			'Authorization': "auth not set"
 		}
