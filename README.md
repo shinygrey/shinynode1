@@ -2,7 +2,7 @@
 This repo was created when I was first learning Node.js.  When I first tried Node I was experimenting with making requests to the Twitter API.  
 
 ## Why?
-I'm aware there are libraries that could of done all this for me but it was a learning exercise at the time.  
+I'm aware there are libraries that could have done all this for me but it was a learning exercise at the time.  
 I read the instructions at [developer.twitter.com](https://developer.twitter.com/) and learnt to assemble an authorisation header which included use of `crypto.createHmac()`, as well as how to properly store secrets in Heroku config vars. 
 
 ### sooo .... 
