@@ -59,7 +59,7 @@
 					var tweet;
 					for (var i = 0; i < result.length; i++) {
 						tweet = '<div class="card"><div class="card-body"><p class="card-text">'+result[i].text+'</p></div><div class="card-footer"><small class="text-muted">'+result[i].created_at+'</small></div></div>';
-						cards.append(tweet);
+						cards.appendChild(tweet);
 					}
 					$('main').append(cards);
 				}
