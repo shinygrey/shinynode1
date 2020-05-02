@@ -1,10 +1,12 @@
 const express = require('express')
-const path = require('path');
+const path = require('path')
 
-const {twitterRequest} = require("./request-twitter");
+const {twitterRequest} = require("./request-twitter")
 
 const app = express()
 const port = process.env.PORT || 3000
+
+twitterRequest.sendRequest()
 
 app.use('/assets',express.static('assets'));
 app.get('/', (req, res) => res.sendFile(
@@ -12,8 +14,7 @@ app.get('/', (req, res) => res.sendFile(
 ))
 
 app.get('/twitter', (req, res) => {
-	twitterRequest.sendRequest()
-	res.json(twitterRequest.responseData)
+	res.json(JSON.parse(twitterRequest.responseData))
 	res.end()
 })
 
