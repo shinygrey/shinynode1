@@ -5,7 +5,7 @@
 	<meta name="description" content="A company offering engineering design, CAD, web development and programming delivered through freelance or contract.  Shiny Grey Ltd can provide engineering services such as solid modeling and AutoCAD drawings.">
 
 	<link rel="icon" href="data:image;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAB8b2YAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAERERERERERERERAAAAERERERAAAAABERERAAEREAAREREAERERABEREREREREAEREREREREAARERERAAAAARERERAAAAAREREREAEREREREREAEREREREREQAREREAERERAAEREAAREREQAAAAAREREREAAAARERERERERERERH//wAA+B8AAPAPAADjxwAA5+cAAP/nAAD/xwAA+A8AAPAfAADz/wAA5/8AAOfnAADjxwAA8A8AAPgfAAD//wAA">
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway%7CUbuntu" integrity="sha384-xv9Jl6S8X0+9/V2C5VKd946OcDuUBjijWuj1p6e5gu2sGdT3GHfCP1reCbMyFOnu" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway%7CUbuntu">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 	<link rel='stylesheet' type='text/css' href='/assets/main.min.css'>
 
@@ -26,10 +26,10 @@
 		<nav id="navoffcanvas" class="nav pt-3">
 		</nav>
 
-		<div class='row align-items-center'>
+		<div class='row justify-content-center my-3'>
 			<div class="col-10 col-sm-9 col-lg-8">
 			<h1 class="h3">Node.js and REST demo</h1>
-			<p>Last few Tweets from <a href='https://twitter.com/shinygreyltd'>@ShinyGreyLtd.  Hosted on Heroku.  Deployed from <a href='https://github.com/shinygrey/shinynode1'>github.com/shinygrey/shinynode1</a>.</p>
+			<p>Last few Tweets from <a href='https://twitter.com/shinygreyltd'><b>@ShinyGreyLtd</b></a>.  Hosted on Heroku.  Deployed from <a href='https://github.com/shinygrey/shinynode1'><b>github.com/shinygrey/shinynode1</b></a>.</p>
 			<p id='loading'>Loading...</p>
 			</div>
 		</div>
@@ -61,7 +61,7 @@
 					$('main').append('<p><b>Twitter api:</b> '+result.errors[0].message+'</p>');
 				}else{
 					var cards = document.createElement('div');
-					cards.className = 'card-deck';
+					cards.className = 'card-deck mx-2';
 					var tweet;
 					for (var i = 0; i < result.length; i++) {
 						tweet = document.createElement('div');
