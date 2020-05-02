@@ -16,7 +16,7 @@ exports.twitterRequest = {
 	options: {
 		method: 'GET',
 		host: 'api.twitter.com',
-		path: '/1.1/statuses/user_timeline.json?screen_name=shinygreyltd&count='+this.count,
+		path: '',
 		headers: {
 			'Authorization': "auth not set"
 		}
@@ -25,6 +25,8 @@ exports.twitterRequest = {
 	oauthAccessToken: encodeURIComponent(process.env.TWITTER_ACCESS_TOKEN),
 	oauthConsumerSecret: encodeURIComponent(process.env.TWITTER_CONSUMER_SECRET),
 	oauthAccessTokenSecret: encodeURIComponent(process.env.TWITTER_ACCESS_TOKEN_SECRET),
+
+
 
 	getProtocol: function (requestUrl){
 		var protocolToUse;
@@ -37,12 +39,13 @@ exports.twitterRequest = {
 	},
 
 	sendRequest: function(){
+		this.options.path = '/1.1/statuses/user_timeline.json?screen_name='+this.screenName+'&count='+this.count;
 		var protocol = this.getProtocol(this.requestUrl);
 		this.getAuth();
 		protocol.get(this.options, (res) => {
 			this.contentType = res.headers['content-type'];
 			this.statusCode = res.statusCode;
-			
+
 			for (var key in res.headers) {
 				if (Object.prototype.hasOwnProperty.call(res.headers, key)){
 					var val = res.headers[key];
