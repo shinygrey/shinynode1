@@ -73,9 +73,9 @@ exports.twitterRequest = {
 
 	checkContentType: function(contentType){
 		if(/^application\/xml/.test(contentType)){
-			//console.log("xml")
+			console.log("xml")
 		}else if(/^application\/json/.test(contentType)){
-			//console.log("json")
+			console.log("json")
 		}else{
 			var error = new Error(`Invalid content-type. Expected application/json but received ${contentType}`);
 			return error;
