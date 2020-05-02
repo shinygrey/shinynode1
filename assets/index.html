@@ -59,7 +59,12 @@
 					cards.className = 'card-deck';
 					var tweet;
 					for (var i = 0; i < result.length; i++) {
-						tweet = '<div class="card"><div class="card-body"><p class="card-text">'+result[i].text+'</p></div><div class="card-footer"><small class="text-muted">'+result[i].created_at+'</small></div></div>';
+						tweet = document.createElement('div');
+						card.className = 'card';
+						var cardBody = document.createElement('div');
+						cardBody.className = 'card-body';
+						cardBody.appendChild(document.createTextNode(result[i].text));
+						card.appendChild(cardBody);
 						cards.appendChild(tweet);
 					}
 					$('main').append(cards);
