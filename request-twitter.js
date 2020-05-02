@@ -16,7 +16,7 @@ exports.twitterRequest = {
 	options: {
 		method: 'GET',
 		host: 'api.twitter.com',
-		path: '/1.1/statuses/user_timeline.json?screen_name=shinygreyltd&count=0'+this.count,
+		path: '/1.1/statuses/user_timeline.json?screen_name=shinygreyltd&count='+this.count,
 		headers: {
 			'Authorization': "auth not set"
 		}

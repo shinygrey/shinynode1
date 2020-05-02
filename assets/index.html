@@ -52,7 +52,7 @@
 			url: "/twitter", 
 			dataType: "json", 
 			success: function(result){
-				if(result.hasOwnProperty('errors'){
+				if(result.hasOwnProperty('errors')){
 					$('main').append('<p><b>Twitter api:</b> '+result[0].message+'</p>');
 				}else{
 					var cards = '<div class="card-deck"></div>';
